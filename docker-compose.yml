@@ -136,13 +136,15 @@ services:
     volumes:
       - ./notebooks:/home/jovyan/work
       - ./data/jupyter:/data/jupyter
-      - ./jupyter/jupyter-spark-defaults.conf.template:/tmp/spark-defaults.conf.template:ro
-      - ./jupyter/generate-spark-config.py:/tmp/generate-spark-config.py:ro
+      - ./spark/conf:/spark-conf
+      - ./spark-defaults.conf.template:/tmp/spark-defaults.conf.template:ro
+      - ./generate-spark-config.py:/tmp/generate-spark-config.py:ro
     command: >
       bash -c "
       set -e &&
       mkdir -p /home/jovyan/.sparkconf &&
-      python3 /tmp/generate-spark-config.py &&
+      python3 /tmp/generate-spark-config.py /home/jovyan/.sparkconf/spark-defaults.conf &&
+      python3 /tmp/generate-spark-config.py /spark-conf/spark-defaults.conf &&
       pip install --quiet pyiceberg[pyarrow,pandas] trino sqlalchemy matplotlib seaborn requests &&
       start-notebook.sh --NotebookApp.token='' --NotebookApp.password=''
       "

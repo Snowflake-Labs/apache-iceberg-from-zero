@@ -16,8 +16,10 @@ spark.sql.catalog.polaris.header.X-Iceberg-Access-Delegation=vended-credentials
 spark.sql.defaultCatalog=polaris
 
 # S3 Configuration for MinIO
+spark.hadoop.fs.s3.impl=org.apache.hadoop.fs.s3a.S3AFileSystem
+spark.hadoop.fs.s3a.impl=org.apache.hadoop.fs.s3a.S3AFileSystem
 spark.hadoop.fs.s3a.endpoint=http://minio:9000
 spark.hadoop.fs.s3a.access.key=admin
 spark.hadoop.fs.s3a.secret.key=password
 spark.hadoop.fs.s3a.path.style.access=true
-spark.hadoop.fs.s3a.impl=org.apache.hadoop.fs.s3a.S3AFileSystem
+spark.hadoop.fs.s3a.connection.ssl.enabled=false

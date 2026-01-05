@@ -76,7 +76,7 @@ MinIO provides S3-compatible object storage for Iceberg table data.
 
 ### Polaris Iceberg REST Catalog
 
-The Polaris catalog provides a REST API for managing Iceberg table metadata. It's configured to use MinIO for storage.
+The Polaris catalog provides a REST API for managing Iceberg table metadata. It's configured with in memory persistence for Catalog entries and MinIO for table metadata.
 
 **Configuration**:
 - Port: 8181
@@ -214,12 +214,6 @@ docker-compose up -d
 docker-compose down
 ```
 
-**Stop and remove all data**:
-```bash
-docker-compose down -v
-rm -rf data/*
-```
-
 **View logs**:
 ```bash
 # All services
@@ -290,67 +284,35 @@ docker-compose up -d --build
 ## Architecture
 
 ```
-                    Jupyter Notebook (port 8888)
-                    - PySpark with Iceberg
-                    - Python data science libraries
-                              |
-                              | connects to
-                              ▼
-                    Spark Master (ports 7077, 8081, 4040)
-                    - Iceberg Spark Runtime
-                    - Configured for Polaris REST catalog
-                              |
-                              |
-        ┌─────────────────────┴─────────────────────┐
-        │                                           │
-        │           Polaris REST Catalog            │
-        │           (port 8181)                     │
-        │           - OAuth2 authentication         │
-        │           - Table metadata management     │
-        │           - REST API for catalogs         │
-        │                                           │
-        └─────────────────────┬─────────────────────┘
-                              │
-                              │ reads/writes data
-                              ▼
-                    ┌─────────────────────┐
-                    │   MinIO (S3)        │
-                    │   (ports 9000/9001) │
-                    │   - Bucket: warehouse│
-                    │   - Parquet files   │
-                    │   - Metadata files  │
-                    └─────────────────────┘
-                              ▲
-                              │ also connects
-                              │
-                    Trino (port 8080)
-                    - Independent SQL query engine
-                    - Iceberg connector
-                    - Can query same tables via Polaris
-
-Data Flow:
-  1. Spark/Trino → Polaris API (get metadata)
-  2. Polaris → returns table location in S3
-  3. Spark/Trino → MinIO S3 (read/write table data)
-  4. Spark/Trino → Polaris API (update metadata)
+┌─────────────────────┐                        ┌─────────────────────┐
+│   Spark Context     │                        │       Trino         │
+│   (ports 7077, 8081)│                        │     (port 8080)     │
+│ - Iceberg Runtime   │                        │ - Iceberg connector │
+│ - Via Jupyter :8888 │                        │ - SQL query engine  │
+└──────────┬──────────┘                        └──────────┬──────────┘
+           │                                              │
+           │\                                            /│
+           │ \                                          / │
+           │  \          ┌─────────────────┐          /  │
+           │   \         │     Polaris     │         /   │
+           │    \        │   REST Catalog  │        /    │
+           │     └──────▶│   (port 8181)   │◀──────┘     │
+           │             └────────┬────────┘             │
+           │                      │                      │
+           └──────────────────────┼──────────────────────┘
+                                  │
+                                  ▼
+              ┌───────────────────────────────────────┐
+              │         MinIO (S3-compatible)         │
+              │         (ports 9000/9001)             │
+              │      - Bucket: warehouse              │
+              │      - Parquet data files             │
+              │      - Metadata files                 │
+              └───────────────────────────────────────┘
 
 All table data stored in: MinIO s3://warehouse/
 All metadata managed by: Polaris REST catalog
 ```
-
-**Key Points**:
-- **Jupyter/Spark** and **Trino** are independent query engines
-- Both connect to **Polaris** for metadata (catalog API)
-- **Polaris** tracks table locations, schemas, snapshots
-- **MinIO** stores the actual Parquet data files
-- This mirrors production architecture with AWS S3, Azure, or GCS
-
-## Learning Path
-
-1. **Start with Jupyter Notebook**: Open `iceberg_demo.ipynb` and run through the examples
-2. **Explore with Trino**: Connect to Trino CLI and query the tables created in Jupyter
-3. **Experiment with Spark**: Use Spark Shell to perform more advanced operations
-4. **Deep Dive**: Explore table metadata, snapshots, and time travel features
 
 ## Additional Resources
 
@@ -363,8 +325,8 @@ All metadata managed by: Polaris REST catalog
 
 - All services are configured to communicate via Docker's internal network (`iceberg-net`)
 - The Jupyter notebook is configured without password for ease of use (not recommended for production)
-- Polaris uses a default root password `admin123` (change for production use)
-- Local file storage is used instead of S3/HDFS for simplicity
+- Polaris uses a default root password `admin123` (change for production use) 
+- Polaris is also setup with "in-memory" persistence, in production this should be a permanent store
 
 ## Support
 
