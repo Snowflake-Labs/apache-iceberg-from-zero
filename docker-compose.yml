@@ -1,7 +1,7 @@
 services:
   # MinIO - S3-compatible object storage
   minio:
-    image: minio/minio:latest
+    image: quay.io/minio/minio:latest
     container_name: minio
     ports:
       - "9000:9000"
@@ -52,7 +52,7 @@ services:
 
   # Setup MinIO bucket
   setup_bucket:
-    image: minio/mc:latest
+    image: quay.io/minio/mc:latest
     container_name: setup-minio
     depends_on:
       minio:
@@ -71,7 +71,7 @@ services:
 
   # Setup Polaris catalog
   polaris-setup:
-    image: alpine/curl:8.11.1
+    image: alpine/curl
     container_name: setup-polaris
     depends_on:
       polaris:
@@ -96,7 +96,7 @@ services:
     image: apache/spark:${SPARK_VERSION}-scala${SCALA_VERSION}-java17-python3-ubuntu
     container_name: spark-master
     ports:
-      - "8081:8081"
+      - "8081:8080"
       - "7077:7077"
       - "4040:4040"
     environment:
