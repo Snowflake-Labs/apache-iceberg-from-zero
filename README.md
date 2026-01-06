@@ -3,8 +3,7 @@
 This Docker setup provides a complete, production-like environment for learning Apache Iceberg with:
 - **MinIO**: A Local S3-compatible object storage for table data
 - **Polaris**: Apache Iceberg REST Catalog
-- **Spark**: Unified analytics engine with Iceberg support
-- **Jupyter Notebook**: Interactive Python notebook with PySpark
+- **Jupyter Notebook**: Interactive Python notebook with PySpark and Iceberg support
 - **Trino**: Distributed SQL query engine
 
 ## Version Configuration
@@ -46,7 +45,6 @@ docker-compose up -d --build
 4. **Access the services**:
    - **Jupyter Notebook**: http://localhost:8888 (no password) - **Start here!**
    - **MinIO Console**: http://localhost:9001 (admin/password) - View your data
-   - **Spark Master UI**: http://localhost:8081
    - **Trino UI**: http://localhost:8080
    - **Polaris API**: http://localhost:8181
 
@@ -130,40 +128,6 @@ INSERT INTO iceberg.demo.test VALUES (1, 'Alice'), (2, 'Bob');
 SELECT * FROM iceberg.demo.test;
 ```
 
-### Spark
-
-Spark is configured with Iceberg libraries and connected to the Polaris catalog.
-
-**Configuration**:
-- Master UI Port: 8081
-- Master Port: 7077
-- Application UI Port: 4040
-- Data directory: `./data/spark`
-- Config file: `./spark/conf/spark-defaults.conf`
-
-**Run Spark Shell**:
-```bash
-# The Iceberg version is read from the environment variable
-docker exec -it spark-master bash -c '
-  /opt/spark/bin/spark-shell \
-    --packages org.apache.iceberg:iceberg-spark-runtime-${SPARK_VERSION}_${SCALA_VERSION}:${ICEBERG_VERSION} \
-    --conf spark.sql.extensions=org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions \
-    --conf spark.sql.catalog.polaris=org.apache.iceberg.spark.SparkCatalog \
-    --conf spark.sql.catalog.polaris.type=rest \
-    --conf spark.sql.catalog.polaris.uri=http://polaris:8181/api/catalog \
-    --conf spark.sql.catalog.polaris.warehouse=polaris
-'
-
-# Or with explicit version (example):
-docker exec -it spark-master /opt/spark/bin/spark-shell \
-  --packages org.apache.iceberg:iceberg-spark-runtime-3.5_2.13:1.10.0 \
-  --conf spark.sql.extensions=org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions \
-  --conf spark.sql.catalog.polaris=org.apache.iceberg.spark.SparkCatalog \
-  --conf spark.sql.catalog.polaris.type=rest \
-  --conf spark.sql.catalog.polaris.uri=http://polaris:8181/api/catalog \
-  --conf spark.sql.catalog.polaris.warehouse=polaris
-```
-
 ### Jupyter Notebook with PySpark
 
 The Jupyter environment comes pre-configured with:
@@ -195,9 +159,9 @@ The Jupyter environment comes pre-configured with:
 ## Data Persistence
 
 All data is stored locally in the `./data` directory:
+- `./data/minio`: MinIO object storage (Iceberg table data)
 - `./data/polaris`: Polaris catalog metadata
 - `./data/trino`: Trino working data
-- `./data/spark`: Spark data and logs
 - `./data/jupyter`: Jupyter user data
 
 This ensures that your data persists even when containers are stopped.
@@ -222,7 +186,6 @@ docker-compose logs -f
 # Specific service
 docker-compose logs -f jupyter
 docker-compose logs -f trino
-docker-compose logs -f spark
 docker-compose logs -f polaris
 ```
 
@@ -245,7 +208,8 @@ Check if ports are already in use:
 # macOS/Linux
 lsof -i :8888  # Jupyter
 lsof -i :8080  # Trino
-lsof -i :8081  # Spark
+lsof -i :9000  # MinIO API
+lsof -i :9001  # MinIO Console
 lsof -i :8181  # Polaris
 ```
 
@@ -284,24 +248,25 @@ docker-compose up -d --build
 ## Architecture
 
 ```
-┌─────────────────────┐                        ┌─────────────────────┐
-│   Spark Context     │                        │       Trino         │
-│   (ports 7077, 8081)│                        │     (port 8080)     │
-│ - Iceberg Runtime   │                        │ - Iceberg connector │
-│ - Via Jupyter :8888 │                        │ - SQL query engine  │
-└──────────┬──────────┘                        └──────────┬──────────┘
-           │                                              │
-           │\                                            /│
-           │ \                                          / │
-           │  \          ┌─────────────────┐          /  │
-           │   \         │     Polaris     │         /   │
-           │    \        │   REST Catalog  │        /    │
-           │     └──────▶│   (port 8181)   │◀──────┘     │
-           │             └────────┬────────┘             │
-           │                      │                      │
-           └──────────────────────┼──────────────────────┘
-                                  │
-                                  ▼
+┌───────────────────────────┐                  ┌───────────────────────────┐
+│          Spark            │                  │    Trino (port 8080)      │
+│                           │                  │                           │
+│ - Spark Shell             │                  │ - SQL Query Engine        │
+│ - Jupyter (port 8888)     │                  │                           │
+│                           │                  │                           │
+└─────────────┬─────────────┘                  └─────────────┬─────────────┘
+              │                                              │
+              │\                                            /│
+              │ \                                          / │
+              │  \          ┌─────────────────┐          /  │
+              │   \         │     Polaris     │         /   │
+              │    \        │   REST Catalog  │        /    │
+              │     └──────▶│   (port 8181)   │◀──────┘     │
+              │             └────────┬────────┘             │
+              │                      │                      │
+              └──────────────────────┼──────────────────────┘
+                                     │
+                                     ▼
               ┌───────────────────────────────────────┐
               │         MinIO (S3-compatible)         │
               │         (ports 9000/9001)             │
@@ -312,6 +277,7 @@ docker-compose up -d --build
 
 All table data stored in: MinIO s3://warehouse/
 All metadata managed by: Polaris REST catalog
+PySpark runs in local mode (local[*]) within Jupyter container
 ```
 
 ## Additional Resources
