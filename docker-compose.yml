@@ -97,6 +97,7 @@ services:
     container_name: jupyter-spark
     ports:
       - "8888:8888"
+      - "4040:4040"
     environment:
       - JUPYTER_ENABLE_LAB=yes
       - SPARK_MASTER=local[*]
