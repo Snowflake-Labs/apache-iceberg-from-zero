@@ -49,8 +49,7 @@ docker-compose up -d --build
    - **Polaris API**: http://localhost:8181
 
 5. **Open the demo notebook**:
-   - Navigate to http://localhost:8888
-   - Open `iceberg_demo.ipynb`
+   - Direct link: http://localhost:8888/lab/tree/work/OpenLakehouse.ipynb
    - Run through the cells to see Iceberg with Polaris and MinIO
 
 ## Service Details
@@ -148,7 +147,7 @@ The Jupyter environment comes pre-configured with:
 - **This is a production-like pattern** - same architecture as using Polaris with real S3/Azure/GCS
 - OAuth2 authentication configured automatically
 
-**Sample notebook**: `iceberg_demo.ipynb` is provided with examples of:
+**Sample notebook**: `OpenLakehouse.ipynb` is provided with examples of:
 - Creating Iceberg tables
 - Querying data
 - ACID transactions
