@@ -120,7 +120,7 @@ services:
       set -e &&
       mkdir -p /home/jovyan/.sparkconf &&
       python3 /tmp/generate-spark-config.py /home/jovyan/.sparkconf/spark-defaults.conf &&
-      pip install --quiet pyiceberg[pyarrow,pandas] trino sqlalchemy matplotlib seaborn requests &&
+      pip install --quiet pyiceberg[pyarrow,pandas] trino sqlalchemy matplotlib seaborn requests boto3 &&
       start-notebook.sh --NotebookApp.token='' --NotebookApp.password=''
       "
     depends_on:
