@@ -121,13 +121,16 @@ services:
       mkdir -p /home/jovyan/.sparkconf &&
       python3 /tmp/generate-spark-config.py /home/jovyan/.sparkconf/spark-defaults.conf &&
       pip install --quiet pyiceberg[pyarrow,pandas] trino sqlalchemy matplotlib seaborn requests boto3 &&
-      start-notebook.sh --NotebookApp.token='' --NotebookApp.password=''
+      jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --NotebookApp.token='' --NotebookApp.password='' --NotebookApp.allow_origin='*'
       "
-    depends_on:
-      - polaris
-      - polaris-setup
     networks:
       - iceberg-net
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8888/api"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 120s
 
   # Trino
   trino:
@@ -140,8 +143,10 @@ services:
       - ./trino/config:/etc/trino
       - ./data/trino:/data/trino
     depends_on:
-      - polaris
-      - polaris-setup
+      polaris:
+        condition: service_healthy
+      polaris-setup:
+        condition: service_completed_successfully
     networks:
       - iceberg-net
 
