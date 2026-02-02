@@ -6,6 +6,8 @@ This Docker setup provides a complete, production-like environment for learning 
 - **Jupyter Notebook**: Interactive Python notebook with PySpark and Iceberg support
 - **Trino**: Distributed SQL query engine
 
+You should have found this repositories along with the course videos here (TODO LINK), please check them out if you haven't.
+
 ## Version Configuration
 
 All versions are centrally managed in the `.env` file:
@@ -36,20 +38,20 @@ docker-compose up -d --build
    docker-compose up -d
    ```
 
-3. **Wait for services to be ready** (approximately 1-2 minutes):
+2. **Wait for services to be ready** (approximately 1-2 minutes):
    ```bash
    docker-compose logs -f
    ```
    Press `Ctrl+C` to stop following logs once services are running.
 
-4. **Access the services**:
+3. **Access the services**:
    - **Jupyter Notebook**: http://localhost:8888 (no password) - **Start here!**
    - **MinIO Console**: http://localhost:9001 (admin/password) - View your data
    - **Trino UI**: http://localhost:8080
    - **Polaris API**: http://localhost:8181
 
-5. **Open the demo notebook**:
-   - Direct link: http://localhost:8888/lab/tree/work/OpenLakehouse.ipynb
+4. **Open the demo notebook**:
+- Direct link: http://localhost:8888/lab/tree/work/E1.1%20-%20OpenLakehouse.ipynb
    - Run through the cells to see Iceberg with Polaris and MinIO
 
 ## Service Details
@@ -73,7 +75,7 @@ MinIO provides S3-compatible object storage for Iceberg table data.
 
 ### Polaris Iceberg REST Catalog
 
-The Polaris catalog provides a REST API for managing Iceberg table metadata. It's configured with in memory persistence for Catalog entries and MinIO for table metadata.
+The Polaris catalog provides a REST API for managing Iceberg table metadata. It's configured with in-memory persistence for Catalog entries and MinIO for table metadata.
 
 **Configuration**:
 - Port: 8181
@@ -147,7 +149,7 @@ The Jupyter environment comes pre-configured with:
 - **This is a production-like pattern** - same architecture as using Polaris with real S3/Azure/GCS
 - OAuth2 authentication configured automatically
 
-**Sample notebook**: `OpenLakehouse.ipynb` is provided with examples of:
+**Sample notebook**: `E1.1 - OpenLakehouse.ipynb` is provided with examples of:
 - Creating Iceberg tables
 - Querying data
 - ACID transactions
@@ -291,7 +293,7 @@ PySpark runs in local mode (local[*]) within Jupyter container
 - All services are configured to communicate via Docker's internal network (`iceberg-net`)
 - The Jupyter notebook is configured without password for ease of use (not recommended for production)
 - Polaris uses a default root password `admin123` (change for production use) 
-- Polaris is also setup with "in-memory" persistence, in production this should be a permanent store
+- Polaris is also set up with "in-memory" persistence, in production this should be a permanent store
 
 ## Support
 
@@ -300,4 +302,3 @@ If you encounter issues:
 2. Review service logs: `docker-compose logs [service-name]`
 3. Ensure your Docker has sufficient resources allocated
 4. Try rebuilding: `docker-compose up -d --build`
-
