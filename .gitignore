@@ -11,6 +11,13 @@ data/
 __pycache__/
 *.pyc
 
+# Test artifacts
+*_executed.ipynb
+.pytest_cache/
+test_report.html
+htmlcov/
+.coverage
+
 # OS files
 .DS_Store
 Thumbs.db

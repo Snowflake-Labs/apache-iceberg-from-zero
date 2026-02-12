@@ -1,0 +1,6 @@
+# Test dependencies for notebook test suite
+pytest>=8.0.0
+pytest-xdist>=3.5.0  # For parallel test execution
+nbconvert>=7.0.0
+nbformat>=5.9.0
+jupyter-client>=8.0.0

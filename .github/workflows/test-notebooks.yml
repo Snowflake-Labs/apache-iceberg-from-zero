@@ -1,0 +1,163 @@
+name: Test Notebooks
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'notebooks/**/*.ipynb'
+      - 'test_notebooks.py'
+      - 'requirements-test.txt'
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'notebooks/**/*.ipynb'
+      - 'test_notebooks.py'
+      - 'requirements-test.txt'
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  test-notebooks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120  # 2 hour timeout for entire job
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+    
+    - name: Install test dependencies
+      run: |
+        pip install --upgrade pip
+        pip install -r requirements-test.txt
+    
+    - name: Create .env file
+      run: |
+        # Create .env file if it doesn't exist
+        if [ ! -f .env ]; then
+          cat > .env << EOF
+        SPARK_VERSION=4.0.1
+        ICEBERG_VERSION=1.10.0
+        ICEBERG_SPARK_RUNTIME_VERSION=1.10.0
+        SCALA_VERSION=2.13
+        AWS_SDK_VERSION=2.21.0
+        TRINO_VERSION=465
+        POLARIS_CLIENT_ID=root
+        POLARIS_CLIENT_SECRET=s3cr3t
+        EOF
+        fi
+    
+    - name: Start Docker services
+      run: |
+        docker-compose up -d
+    
+    - name: Wait for services to be ready
+      run: |
+        echo "Waiting for Jupyter service to be healthy..."
+        timeout 300 bash -c 'until docker exec jupyter-spark curl -f http://localhost:8888/api 2>/dev/null; do sleep 5; done'
+        echo "Jupyter is ready!"
+        
+        echo "Checking all services..."
+        docker-compose ps
+    
+    - name: Run notebook tests
+      run: |
+        pytest test_notebooks.py -v --tb=short --maxfail=3
+      timeout-minutes: 90
+    
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-results
+        path: |
+          .pytest_cache/
+          notebooks/**/*_executed.ipynb
+        retention-days: 7
+    
+    - name: Show Docker logs on failure
+      if: failure()
+      run: |
+        echo "=== Jupyter logs ==="
+        docker-compose logs jupyter
+        echo "=== Polaris logs ==="
+        docker-compose logs polaris
+        echo "=== MinIO logs ==="
+        docker-compose logs minio
+    
+    - name: Stop Docker services
+      if: always()
+      run: |
+        docker-compose down -v
+
+  # Optional: Run notebooks individually for better error isolation
+  test-notebooks-individual:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false  # Continue testing other notebooks even if one fails
+      matrix:
+        notebook:
+          - "Module1_Apache_Iceberg_Fundamentals"
+          - "Module2_Taking_Advantage_of_Iceberg_Tables"
+          - "Module3_Operating_and_Optimizing_Apache_Iceberg"
+          - "E1.1 - OpenLakehouse"
+          - "E1.2 - DataModeling"
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+    
+    - name: Install test dependencies
+      run: |
+        pip install --upgrade pip
+        pip install -r requirements-test.txt
+    
+    - name: Create .env file
+      run: |
+        if [ ! -f .env ]; then
+          cat > .env << EOF
+        SPARK_VERSION=4.0.1
+        ICEBERG_VERSION=1.10.0
+        ICEBERG_SPARK_RUNTIME_VERSION=1.10.0
+        SCALA_VERSION=2.13
+        AWS_SDK_VERSION=2.21.0
+        TRINO_VERSION=465
+        POLARIS_CLIENT_ID=root
+        POLARIS_CLIENT_SECRET=s3cr3t
+        EOF
+        fi
+    
+    - name: Start Docker services
+      run: |
+        docker-compose up -d
+        timeout 300 bash -c 'until docker exec jupyter-spark curl -f http://localhost:8888/api 2>/dev/null; do sleep 5; done'
+    
+    - name: Run test for ${{ matrix.notebook }}
+      run: |
+        pytest test_notebooks.py -v -k "${{ matrix.notebook }}" --tb=short
+      timeout-minutes: 45
+    
+    - name: Upload test results for ${{ matrix.notebook }}
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: test-results-${{ matrix.notebook }}
+        path: |
+          notebooks/**/*_executed.ipynb
+        retention-days: 7
+    
+    - name: Stop Docker services
+      if: always()
+      run: |
+        docker-compose down -v

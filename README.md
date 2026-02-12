@@ -281,6 +281,15 @@ All metadata managed by: Polaris REST catalog
 PySpark runs in local mode (local[*]) within Jupyter container
 ```
 
+## Testing Notebooks
+
+An automated test suite is available to validate all notebooks. See [TESTING.md](TESTING.md) for instructions.
+
+```bash
+pip install -r requirements-test.txt
+pytest test_notebooks.py -v
+```
+
 ## Additional Resources
 
 - [Apache Iceberg Documentation](https://iceberg.apache.org/)
