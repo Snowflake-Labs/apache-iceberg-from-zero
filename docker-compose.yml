@@ -1,4 +1,25 @@
 services:
+  # Verify Docker VM has enough memory for the full stack
+  check-resources:
+    image: alpine:latest
+    container_name: check-resources
+    entrypoint: /bin/sh
+    command:
+      - "-c"
+      - |
+        total_kb=$$(awk '/MemTotal/ {print $$2}' /proc/meminfo)
+        total_gb=$$((total_kb / 1024 / 1024))
+        required_gb=16
+        echo "Docker VM memory: $${total_gb} GB ($${total_kb} kB)"
+        if [ "$$total_gb" -lt "$$required_gb" ]; then
+          echo "ERROR: At least $${required_gb} GB required."
+          echo "Increase memory in Docker Desktop > Settings > Resources."
+          exit 1
+        fi
+        echo "Memory check passed."
+    networks:
+      - iceberg-net
+
   # MinIO - S3-compatible object storage
   minio:
     image: quay.io/minio/minio:latest
@@ -12,6 +33,9 @@ services:
     command: server /data --console-address ":9001"
     volumes:
       - ./data/minio:/data
+    depends_on:
+      check-resources:
+        condition: service_completed_successfully
     networks:
       - iceberg-net
     healthcheck:
@@ -98,6 +122,9 @@ services:
     ports:
       - "8888:8888"
       - "4040:4040"
+    depends_on:
+      check-resources:
+        condition: service_completed_successfully
     environment:
       - JUPYTER_ENABLE_LAB=yes
       - SPARK_MASTER=local[*]
