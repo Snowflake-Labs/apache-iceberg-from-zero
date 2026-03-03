@@ -467,8 +467,7 @@ def pytest_generate_tests(metafunc):
             'Setup.ipynb'
         ])
         
-        # Create test IDs from notebook names
-        ids = [nb.stem for nb in notebooks]
+        ids = [nb.stem.replace('.', '_').replace(' - ', '_').replace(' ', '_') for nb in notebooks]
         metafunc.parametrize("notebook_path", notebooks, ids=ids)
 
 

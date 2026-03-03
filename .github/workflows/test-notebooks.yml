@@ -105,14 +105,14 @@ jobs:
           - "Module1_Apache_Iceberg_Fundamentals"
           - "Module2_Taking_Advantage_of_Iceberg_Tables"
           - "Module3_Operating_and_Optimizing_Apache_Iceberg"
-          - "E1.1 - OpenLakehouse"
-          - "E1.2 - DataModeling"
-          - "E2.1 - MovingExistingTables"
-          - "E2.2 - BranchingAndTagging"
-          - "E2.3 - SchemaAndPartitionEvolution"
-          - "E3.1 - Ingestion"
-          - "E3.2 - MaintenanceProcedures"
-          - "E3.3 - TableModelingAndIngestion"
+          - "E1_1_OpenLakehouse"
+          - "E1_2_DataModeling"
+          - "E2_1_MovingExistingTables"
+          - "E2_2_BranchingAndTagging"
+          - "E2_3_SchemaAndPartitionEvolution"
+          - "E3_1_Ingestion"
+          - "E3_2_MaintenanceProcedures"
+          - "E3_3_TableModelingAndIngestion"
     
     steps:
     - name: Checkout code
