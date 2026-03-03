@@ -12,11 +12,12 @@ services:
         required_gb=16
         echo "Docker VM memory: $${total_gb} GB ($${total_kb} kB)"
         if [ "$$total_gb" -lt "$$required_gb" ]; then
-          echo "ERROR: At least $${required_gb} GB required."
+          echo "WARNING: At least $${required_gb} GB recommended."
           echo "Increase memory in Docker Desktop > Settings > Resources."
-          exit 1
+          echo "Continuing anyway — some services may run out of memory."
+        else
+          echo "Memory check passed."
         fi
-        echo "Memory check passed."
     networks:
       - iceberg-net
 
