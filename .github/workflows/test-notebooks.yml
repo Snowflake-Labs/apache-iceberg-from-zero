@@ -51,6 +51,10 @@ jobs:
         EOF
         fi
     
+    - name: Fix notebook directory permissions for container
+      run: |
+        chmod -R a+w notebooks/
+    
     - name: Start Docker services
       run: |
         docker compose up -d
@@ -60,6 +64,10 @@ jobs:
         echo "Waiting for Jupyter service to be healthy..."
         timeout 300 bash -c 'until docker exec jupyter-spark curl -f http://localhost:8888/api 2>/dev/null; do sleep 5; done'
         echo "Jupyter is ready!"
+        
+        echo "Waiting for Trino to be ready..."
+        timeout 120 bash -c 'until docker exec trino curl -sf http://localhost:8080/v1/info | grep -q ACTIVE; do sleep 5; done'
+        echo "Trino is ready!"
         
         echo "Checking all services..."
         docker compose ps
@@ -145,10 +153,15 @@ jobs:
         EOF
         fi
     
+    - name: Fix notebook directory permissions for container
+      run: |
+        chmod -R a+w notebooks/
+    
     - name: Start Docker services
       run: |
         docker compose up -d
         timeout 300 bash -c 'until docker exec jupyter-spark curl -f http://localhost:8888/api 2>/dev/null; do sleep 5; done'
+        timeout 120 bash -c 'until docker exec trino curl -sf http://localhost:8080/v1/info | grep -q ACTIVE; do sleep 5; done'
     
     - name: Run test for ${{ matrix.notebook }}
       run: |
