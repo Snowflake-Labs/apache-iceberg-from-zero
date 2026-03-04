@@ -201,6 +201,9 @@ class NotebookTester:
         Check if cell source contains a SELECT query (not DDL/DML).
         Only returns True for actual SELECT queries that should return rows.
         """
+        # Strip comment-only lines so we don't match patterns in commented-out code
+        active_lines = [line for line in source.splitlines() if not line.strip().startswith('#')]
+        source = '\n'.join(active_lines)
         source_upper = source.upper()
         
         # Exclude DML/DDL statements that don't return rows

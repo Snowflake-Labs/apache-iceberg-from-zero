@@ -169,7 +169,11 @@ jobs:
     
     - name: Run test for ${{ matrix.notebook }}
       run: |
-        pytest test_notebooks.py -v -k "${{ matrix.notebook }}" --tb=short
+        if [[ "${{ matrix.notebook }}" == Module* ]]; then
+          pytest test_notebooks.py -v -k "test_01_setup or ${{ matrix.notebook }}" --tb=short
+        else
+          pytest test_notebooks.py -v -k "${{ matrix.notebook }}" --tb=short
+        fi
       timeout-minutes: 45
     
     - name: Upload test results for ${{ matrix.notebook }}
