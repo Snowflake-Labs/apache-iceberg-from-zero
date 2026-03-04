@@ -44,7 +44,7 @@ class NotebookTestResult:
         """Record a cell execution error."""
         self.errors.append({
             "cell_index": cell_index,
-            "source": cell_source[:200],  # First 200 chars
+            "source": cell_source[:500],
             "error": error_msg
         })
         self.passed = False
@@ -53,7 +53,7 @@ class NotebookTestResult:
         """Record a SELECT query that returned no rows."""
         self.empty_select_queries.append({
             "cell_index": cell_index,
-            "source": cell_source[:200]
+            "source": cell_source[:500]
         })
         self.passed = False
 
@@ -195,6 +195,67 @@ class NotebookTester:
             result.add_error(-1, "Notebook analysis", f"Failed to analyze notebook: {str(e)}")
         
         return result
+
+    def print_cell_report(self, executed_notebook_path: str, result: NotebookTestResult):
+        """Print a cell-by-cell execution report for CI log visibility."""
+        try:
+            with open(executed_notebook_path, 'r', encoding='utf-8') as f:
+                notebook = json.load(f)
+        except Exception:
+            return
+
+        error_cells = {e['cell_index'] for e in result.errors}
+        empty_cells = {e['cell_index'] for e in result.empty_select_queries}
+
+        cells = notebook.get('cells', [])
+        print(f"\n{'─'*80}")
+        print(f"CELL REPORT: {Path(executed_notebook_path).stem.replace('_executed', '')}")
+        print(f"{'─'*80}")
+
+        for idx, cell in enumerate(cells):
+            if cell.get('cell_type') != 'code':
+                continue
+
+            source = ''.join(cell.get('source', []))
+            first_line = source.strip().split('\n')[0][:80] if source.strip() else '(empty)'
+            outputs = cell.get('outputs', [])
+
+            if idx in error_cells:
+                status = "FAIL"
+            elif idx in empty_cells:
+                status = "EMPTY"
+            else:
+                status = "OK"
+
+            output_preview = ""
+            for out in outputs:
+                if out.get('output_type') == 'stream':
+                    text = out.get('text', '')
+                    if isinstance(text, list):
+                        text = ''.join(text)
+                    lines = text.strip().split('\n')
+                    if lines and lines[0].strip():
+                        output_preview = lines[0].strip()[:60]
+                        break
+                elif out.get('output_type') in ('execute_result', 'display_data'):
+                    text = out.get('data', {}).get('text/plain', '')
+                    if isinstance(text, list):
+                        text = ''.join(text)
+                    if text.strip():
+                        output_preview = text.strip().split('\n')[0][:60]
+                        break
+                elif out.get('output_type') == 'error':
+                    ename = out.get('ename', 'Error')
+                    evalue = out.get('evalue', '')[:60]
+                    output_preview = f"{ename}: {evalue}"
+                    break
+
+            line = f"  Cell {idx:3d} [{status:5s}]  {first_line}"
+            if output_preview:
+                line += f"\n{'':19s}-> {output_preview}"
+            print(line)
+
+        print(f"{'─'*80}\n")
 
     def _has_select_query(self, source: str) -> bool:
         """
@@ -401,11 +462,7 @@ class NotebookTester:
         # Analyze executed notebook
         result = self.analyze_executed_notebook(output_or_error)
         
-        # Clean up executed notebook file
-        try:
-            os.remove(output_or_error)
-        except Exception:
-            pass
+        self.print_cell_report(output_or_error, result)
         
         # Clean up kernel and Spark session before next test
         self.cleanup_kernel_and_spark()

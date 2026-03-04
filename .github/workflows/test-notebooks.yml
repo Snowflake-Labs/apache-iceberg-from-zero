@@ -7,18 +7,22 @@ on:
       - 'notebooks/**/*.ipynb'
       - 'test_notebooks.py'
       - 'requirements-test.txt'
+      - 'docker-compose.yml'
+      - '.github/workflows/test-notebooks.yml'
   pull_request:
     branches: [ main ]
     paths:
       - 'notebooks/**/*.ipynb'
       - 'test_notebooks.py'
       - 'requirements-test.txt'
-  workflow_dispatch:  # Allow manual trigger
+      - 'docker-compose.yml'
+      - '.github/workflows/test-notebooks.yml'
+  workflow_dispatch:
 
 jobs:
   test-notebooks:
-    runs-on: ubuntu-latest
-    timeout-minutes: 120  # 2 hour timeout for entire job
+    runs-on: ubuntu-latest-16-cores
+    timeout-minutes: 120
     
     steps:
     - name: Checkout code
@@ -54,6 +58,11 @@ jobs:
     - name: Fix notebook directory permissions for container
       run: |
         chmod -R a+w notebooks/
+    
+    - name: Cache Docker images
+      uses: ScribeMD/docker-cache@0.5.0
+      with:
+        key: docker-${{ runner.os }}-${{ hashFiles('docker-compose.yml', '.env') }}
     
     - name: Start Docker services
       run: |
@@ -104,10 +113,10 @@ jobs:
 
   # Optional: Run notebooks individually for better error isolation
   test-notebooks-individual:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.runner }}
     timeout-minutes: 60
     strategy:
-      fail-fast: false  # Continue testing other notebooks even if one fails
+      fail-fast: false
       matrix:
         notebook:
           - "Module1_Apache_Iceberg_Fundamentals"
@@ -121,6 +130,13 @@ jobs:
           - "E3_1_Ingestion"
           - "E3_2_MaintenanceProcedures"
           - "E3_3_TableModelingAndIngestion"
+        runner: ["ubuntu-latest"]
+        exclude:
+          - notebook: "E1_1_OpenLakehouse"
+            runner: "ubuntu-latest"
+        include:
+          - notebook: "E1_1_OpenLakehouse"
+            runner: "ubuntu-latest-16-cores"
     
     steps:
     - name: Checkout code
@@ -156,6 +172,11 @@ jobs:
     - name: Fix notebook directory permissions for container
       run: |
         chmod -R a+w notebooks/
+    
+    - name: Cache Docker images
+      uses: ScribeMD/docker-cache@0.5.0
+      with:
+        key: docker-${{ runner.os }}-${{ hashFiles('docker-compose.yml', '.env') }}
     
     - name: Start Docker services
       run: |
