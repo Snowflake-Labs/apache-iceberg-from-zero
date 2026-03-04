@@ -59,11 +59,6 @@ jobs:
       run: |
         chmod -R a+w notebooks/
     
-    - name: Cache Docker images
-      uses: ScribeMD/docker-cache@0.5.0
-      with:
-        key: docker-${{ runner.os }}-${{ hashFiles('docker-compose.yml', '.env') }}
-    
     - name: Start Docker services
       run: |
         docker compose up -d
@@ -172,11 +167,6 @@ jobs:
     - name: Fix notebook directory permissions for container
       run: |
         chmod -R a+w notebooks/
-    
-    - name: Cache Docker images
-      uses: ScribeMD/docker-cache@0.5.0
-      with:
-        key: docker-${{ runner.os }}-${{ hashFiles('docker-compose.yml', '.env') }}
     
     - name: Start Docker services
       run: |
