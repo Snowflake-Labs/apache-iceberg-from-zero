@@ -21,7 +21,7 @@ on:
 
 jobs:
   test-notebooks:
-    runs-on: ubuntu-latest-16-cores
+    runs-on: ubuntu-latest
     timeout-minutes: 120
     
     steps:
@@ -69,10 +69,6 @@ jobs:
         timeout 300 bash -c 'until docker exec jupyter-spark curl -f http://localhost:8888/api 2>/dev/null; do sleep 5; done'
         echo "Jupyter is ready!"
         
-        echo "Waiting for Trino to be ready..."
-        timeout 300 bash -c 'until curl -sf http://localhost:8080/v1/info | grep -q ACTIVE; do sleep 5; done'
-        echo "Trino is ready!"
-        
         echo "Checking all services..."
         docker compose ps
     
@@ -80,6 +76,14 @@ jobs:
       run: |
         pytest test_notebooks.py -v --tb=short --maxfail=3
       timeout-minutes: 90
+    
+    - name: Publish test summary
+      if: always()
+      run: |
+        if [ -f test-summary.md ]; then
+          echo "## Notebook Test Results" >> $GITHUB_STEP_SUMMARY
+          cat test-summary.md >> $GITHUB_STEP_SUMMARY
+        fi
     
     - name: Upload test results
       if: always()
@@ -108,7 +112,7 @@ jobs:
 
   # Optional: Run notebooks individually for better error isolation
   test-notebooks-individual:
-    runs-on: ${{ matrix.runner }}
+    runs-on: ubuntu-latest
     timeout-minutes: 60
     strategy:
       fail-fast: false
@@ -117,7 +121,8 @@ jobs:
           - "Module1_Apache_Iceberg_Fundamentals"
           - "Module2_Taking_Advantage_of_Iceberg_Tables"
           - "Module3_Operating_and_Optimizing_Apache_Iceberg"
-          - "E1_1_OpenLakehouse"
+          # E1.1 skipped — requires Trino which needs more RAM than ubuntu-latest provides
+          # - "E1_1_OpenLakehouse"
           - "E1_2_DataModeling"
           - "E2_1_MovingExistingTables"
           - "E2_2_BranchingAndTagging"
@@ -125,13 +130,6 @@ jobs:
           - "E3_1_Ingestion"
           - "E3_2_MaintenanceProcedures"
           - "E3_3_TableModelingAndIngestion"
-        runner: ["ubuntu-latest"]
-        exclude:
-          - notebook: "E1_1_OpenLakehouse"
-            runner: "ubuntu-latest"
-        include:
-          - notebook: "E1_1_OpenLakehouse"
-            runner: "ubuntu-latest-16-cores"
     
     steps:
     - name: Checkout code
@@ -173,11 +171,6 @@ jobs:
         docker compose up -d
         timeout 300 bash -c 'until docker exec jupyter-spark curl -f http://localhost:8888/api 2>/dev/null; do sleep 5; done'
     
-    - name: Wait for Trino
-      if: matrix.notebook == 'E1_1_OpenLakehouse'
-      run: |
-        timeout 300 bash -c 'until curl -sf http://localhost:8080/v1/info | grep -q ACTIVE; do sleep 5; done'
-    
     - name: Run test for ${{ matrix.notebook }}
       run: |
         if [[ "${{ matrix.notebook }}" == Module* ]]; then
@@ -186,6 +179,14 @@ jobs:
           pytest test_notebooks.py -v -k "${{ matrix.notebook }}" --tb=short
         fi
       timeout-minutes: 45
+    
+    - name: Publish test summary
+      if: always()
+      run: |
+        if [ -f test-summary.md ]; then
+          echo "## ${{ matrix.notebook }}" >> $GITHUB_STEP_SUMMARY
+          cat test-summary.md >> $GITHUB_STEP_SUMMARY
+        fi
     
     - name: Upload test results for ${{ matrix.notebook }}
       if: always()

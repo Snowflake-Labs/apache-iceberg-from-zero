@@ -197,7 +197,7 @@ class NotebookTester:
         return result
 
     def print_cell_report(self, executed_notebook_path: str, result: NotebookTestResult):
-        """Print a cell-by-cell execution report for CI log visibility."""
+        """Print a cell-by-cell execution report and write a markdown summary."""
         try:
             with open(executed_notebook_path, 'r', encoding='utf-8') as f:
                 notebook = json.load(f)
@@ -208,9 +208,12 @@ class NotebookTester:
         empty_cells = {e['cell_index'] for e in result.empty_select_queries}
 
         cells = notebook.get('cells', [])
+        nb_name = Path(executed_notebook_path).stem.replace('_executed', '')
         print(f"\n{'─'*80}")
-        print(f"CELL REPORT: {Path(executed_notebook_path).stem.replace('_executed', '')}")
+        print(f"CELL REPORT: {nb_name}")
         print(f"{'─'*80}")
+
+        md_rows = []
 
         for idx, cell in enumerate(cells):
             if cell.get('cell_type') != 'code':
@@ -255,7 +258,22 @@ class NotebookTester:
                 line += f"\n{'':19s}-> {output_preview}"
             print(line)
 
+            icon = {"OK": "\u2705", "FAIL": "\u274c", "EMPTY": "\u26a0\ufe0f"}.get(status, "")
+            safe_src = first_line.replace('|', '\\|')
+            safe_out = output_preview.replace('|', '\\|') if output_preview else ""
+            md_rows.append(f"| {icon} {status} | {idx} | `{safe_src}` | {safe_out} |")
+
         print(f"{'─'*80}\n")
+
+        summary_path = Path(__file__).parent / "test-summary.md"
+        with open(summary_path, 'a', encoding='utf-8') as f:
+            overall = "\u2705 PASS" if result.passed else "\u274c FAIL"
+            f.write(f"\n### {nb_name} — {overall}\n\n")
+            f.write("| Status | Cell | Source | Output |\n")
+            f.write("|--------|------|--------|--------|\n")
+            for row in md_rows:
+                f.write(row + "\n")
+            f.write("\n")
 
     def _has_select_query(self, source: str) -> bool:
         """
@@ -512,7 +530,8 @@ def all_notebooks(notebook_tester):
     return notebook_tester.get_all_notebooks(exclude_patterns=[
         '.ipynb_checkpoints',
         '_executed',
-        'Setup.ipynb'  # Exclude setup as it's a prerequisite
+        'Setup.ipynb',
+        'E1.1 - OpenLakehouse',
     ])
 
 
@@ -524,7 +543,10 @@ def pytest_generate_tests(metafunc):
         notebooks = tester.get_all_notebooks(exclude_patterns=[
             '.ipynb_checkpoints',
             '_executed',
-            'Setup.ipynb'
+            'Setup.ipynb',
+            # E1.1 requires Trino which needs ~16GB RAM — more than standard
+            # CI runners provide. Re-enable when a larger runner is available.
+            'E1.1 - OpenLakehouse',
         ])
         
         ids = [nb.stem.replace('.', '_').replace(' - ', '_').replace(' ', '_') for nb in notebooks]
