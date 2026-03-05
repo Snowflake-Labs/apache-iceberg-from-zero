@@ -9,7 +9,7 @@ on:
       - main
     paths:
       - '**.ipynb'
-      - '.github/workflows/main.yml'
+      - '.github/workflows/check-notebooks.yml'
   workflow_dispatch:
 
 concurrency:
