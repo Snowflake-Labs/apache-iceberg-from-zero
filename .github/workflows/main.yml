@@ -9,6 +9,7 @@ on:
       - main
     paths:
       - '**.ipynb'
+      - '.github/workflows/main.yml'
   workflow_dispatch:
 
 jobs:
