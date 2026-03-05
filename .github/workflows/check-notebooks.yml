@@ -1,4 +1,4 @@
-name: Check Notebooks Output
+name: Check Notebooks Stripped
 
 on:
   pull_request:
