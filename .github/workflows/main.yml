@@ -12,6 +12,10 @@ on:
       - '.github/workflows/main.yml'
   workflow_dispatch:
 
+concurrency:
+  group: check-notebooks-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   check-notebooks:
     runs-on: ubuntu-latest
