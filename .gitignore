@@ -18,6 +18,15 @@ test_report.html
 htmlcov/
 .coverage
 
+# IDE / editor
+.idea/
+.cursor/
+.vscode/
+
+# Review artifacts
+reviews/
+test-summary.md
+
 # OS files
 .DS_Store
 Thumbs.db
