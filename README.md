@@ -230,6 +230,10 @@ docker-compose logs jupyter
 - Services may take 1-2 minutes to initialize
 - Verify network connectivity: `docker network ls`
 
+### Spark Session: `ConnectionRefusedError: [Errno 111] Connection refused`
+
+If you see this error when initializing a Spark Session in a notebook, the Docker setup is most likely running out of RAM and shutting down the Spark JVM. Either shut down other running notebook kernels (go to the **Running Terminals and Kernels** section in the Jupyter left sidebar) or increase the amount of RAM allocated to Docker.
+
 ### Permission errors
 
 If you encounter permission errors with data directories:
