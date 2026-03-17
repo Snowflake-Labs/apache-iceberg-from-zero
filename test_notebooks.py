@@ -118,8 +118,8 @@ class NotebookTester:
         output_path = str(notebook_path).replace('.ipynb', '_executed.ipynb')
         container_output = f"/home/jovyan/work/{Path(output_path).relative_to(self.notebooks_dir)}"
         
-        # Execute notebook using nbconvert with timeout
-        # Set up Spark environment variables for proper PySpark execution
+        # Execute notebook using nbconvert with timeout.
+        # PYTHONPATH includes pyspark.zip (Connect client) and py4j (transitive dep).
         cmd = [
             "docker", "exec",
             "-e", "PYTHONPATH=/usr/local/spark/python/lib/pyspark.zip:/usr/local/spark/python/lib/py4j-0.10.9.9-src.zip",

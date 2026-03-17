@@ -232,7 +232,7 @@ docker-compose logs jupyter
 
 ### Spark Session: `ConnectionRefusedError: [Errno 111] Connection refused`
 
-If you see this error when initializing a Spark Session in a notebook, the Docker setup is most likely running out of RAM and shutting down the Spark JVM. Either shut down other running notebook kernels (go to the **Running Terminals and Kernels** section in the Jupyter left sidebar) or increase the amount of RAM allocated to Docker.
+If you see this error when initializing a Spark Session in a notebook, the Spark Connect server may have failed to start. Check the Docker container logs (`docker logs jupyter-spark`) for details. Common causes include insufficient Docker RAM or port conflicts. You can also try restarting the container (`docker compose restart jupyter`).
 
 ### Permission errors
 
@@ -254,10 +254,10 @@ docker-compose up -d --build
 
 ```
 ┌───────────────────────────┐                  ┌───────────────────────────┐
-│          Spark            │                  │    Trino (port 8080)      │
+│    Spark Connect + Jupyter│                  │    Trino (port 8080)      │
 │                           │                  │                           │
-│ - Spark Shell             │                  │ - SQL Query Engine        │
-│ - Jupyter (port 8888)     │                  │                           │
+│ - Connect server (:15002) │                  │ - SQL Query Engine        │
+│ - Jupyter Lab (:8888)     │                  │                           │
 │                           │                  │                           │
 └─────────────┬─────────────┘                  └─────────────┬─────────────┘
               │                                              │
@@ -282,7 +282,7 @@ docker-compose up -d --build
 
 All table data stored in: MinIO s3://warehouse/
 All metadata managed by: Polaris REST catalog
-PySpark runs in local mode (local[*]) within Jupyter container
+A single Spark Connect server runs in the Jupyter container; notebooks connect as thin clients
 ```
 
 ## Testing Notebooks
