@@ -26,16 +26,29 @@ on:
       - '.github/workflows/test-notebooks.yml'
   pull_request:
     branches: [ main ]
-    paths:
-      - 'notebooks/**/*.ipynb'
-      - 'test_notebooks.py'
-      - 'requirements-test.txt'
-      - 'docker-compose.yml'
-      - '.github/workflows/test-notebooks.yml'
   workflow_dispatch:
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      notebooks: ${{ steps.filter.outputs.notebooks }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            notebooks:
+              - 'notebooks/**/*.ipynb'
+              - 'test_notebooks.py'
+              - 'requirements-test.txt'
+              - 'docker-compose.yml'
+              - '.github/workflows/test-notebooks.yml'
+
   test-notebooks:
+    needs: changes
+    if: needs.changes.outputs.notebooks == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 60
     strategy:
@@ -125,3 +138,15 @@ jobs:
       if: always()
       run: |
         docker compose down -v
+
+  test-gate:
+    needs: [changes, test-notebooks]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          if [[ "${{ needs.test-notebooks.result }}" == "failure" || "${{ needs.test-notebooks.result }}" == "cancelled" ]]; then
+            echo "Test notebooks failed or were cancelled"
+            exit 1
+          fi
+          echo "Gate passed (test result: ${{ needs.test-notebooks.result }})"
