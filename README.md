@@ -29,8 +29,8 @@ All versions are centrally managed in the `.env` file:
 
 Current pinned versions:
 
-- **Iceberg**: 1.10.0 (released September 5, 2024)
-- **Spark**: 4.0.1 with Scala 2.13 (May 23, 2024)
+- **Iceberg**: 1.10.0 (released September 5, 2025)
+- **Spark**: 4.0.1 with Scala 2.13 (September 2, 2025)
 - **Polaris**: latest
 - **Trino**: 465
 
