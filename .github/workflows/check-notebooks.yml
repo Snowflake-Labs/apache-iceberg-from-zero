@@ -17,8 +17,7 @@ name: Check Notebooks Stripped
 
 on:
   pull_request:
-    paths:
-      - '**.ipynb'
+    branches: [ main ]
   push:
     branches:
       - main
@@ -32,7 +31,22 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      notebooks: ${{ steps.filter.outputs.notebooks }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            notebooks:
+              - '**.ipynb'
+
   check-notebooks:
+    needs: changes
+    if: needs.changes.outputs.notebooks == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -69,3 +83,15 @@ jobs:
           fi
 
           echo "All notebooks are properly stripped! ✅"
+
+  check-gate:
+    needs: [changes, check-notebooks]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          if [[ "${{ needs.check-notebooks.result }}" == "failure" || "${{ needs.check-notebooks.result }}" == "cancelled" ]]; then
+            echo "Check notebooks failed or was cancelled"
+            exit 1
+          fi
+          echo "Gate passed (check result: ${{ needs.check-notebooks.result }})"
