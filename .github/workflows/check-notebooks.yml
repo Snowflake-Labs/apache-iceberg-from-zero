@@ -17,8 +17,7 @@ name: Check Notebooks Stripped
 
 on:
   pull_request:
-    paths:
-      - '**.ipynb'
+    branches: [ main ]
   push:
     branches:
       - main

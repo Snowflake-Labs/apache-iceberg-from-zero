@@ -26,12 +26,6 @@ on:
       - '.github/workflows/test-notebooks.yml'
   pull_request:
     branches: [ main ]
-    paths:
-      - 'notebooks/**/*.ipynb'
-      - 'test_notebooks.py'
-      - 'requirements-test.txt'
-      - 'docker-compose.yml'
-      - '.github/workflows/test-notebooks.yml'
   workflow_dispatch:
 
 jobs:
