@@ -1,0 +1,52 @@
+# Copyright 2026 Snowflake Inc.
+# SPDX-License-Identifier: Apache-2.0
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# Make sure this file is valid yaml, otherwise it will not be recognized by security audits
+
+# point_of_contact: the owner of this repository, can be a GitHub user or GitHub team. Do NOT use the '@' symbol
+point_of_contact: <user or github team>
+
+# production: whether this repository meets the criteria for being "production", see
+# go/production-repository-criteria for criteria
+#
+# If this is not a production repository, set this field to false and delete
+# the rest of the fields below.
+production: true
+
+# distributed: whether any source code in this repository is distributed outside of Snowflake
+# (e.g. driver and frontend software, or distributed to another vendor's marketplace)
+distributed: false
+
+# modified: whether any open source dependencies in this repository have been modified
+modified: false
+
+# legal_exception: whether Legal has granted an exception to the open source policy (go/opensource) for this repo
+# (only set as true if you have been given express permission by Legal)
+legal_exception: false
+
+# release_branches: list of release branch patterns, exact matches or regex is acceptable
+release_branches:
+  - main
+  - release.*
+
+# code_owners_file_present: whether there is a CODEOWNERS file in this repository
+code_owners_file_present: true
+
+# jira_project_issue_type: the Jira issuetype used to raise issues related to this repository in the
+# SNOW Jira project
+jira_project_issue_type: Bug
+
+# jira_area: the Jira area that raised issues should use
+jira_area: Orphaned
