@@ -1,0 +1,123 @@
+Category	Package	Version	Type	License	License URL	Declared In	Notes
+Docker Image	quay.io/jupyter/pyspark-notebook	spark-4.0.1	Direct	BSD-3-Clause	https://github.com/jupyter/docker-stacks/blob/main/LICENSE	docker-compose.yml	Jupyter + PySpark base image
+Docker Image	apache/polaris	latest	Direct	Apache-2.0	https://github.com/apache/polaris/blob/main/LICENSE	docker-compose.yml	Iceberg REST catalog (incubating)
+Docker Image	trinodb/trino	465	Direct	Apache-2.0	https://github.com/trinodb/trino/blob/master/LICENSE	docker-compose.yml	Trino query engine
+Docker Image	quay.io/minio/minio	latest	Direct	AGPL-3.0	https://github.com/minio/minio/blob/master/LICENSE	docker-compose.yml	S3-compatible object storage
+Docker Image	quay.io/minio/mc	latest	Direct	AGPL-3.0	https://github.com/minio/mc/blob/master/LICENSE	docker-compose.yml	MinIO client (setup only)
+Docker Image	alpine/curl	latest	Direct	MIT	https://github.com/alpine-docker/multi-arch-libs/blob/master/LICENSE	docker-compose.yml	Polaris bootstrap (setup only)
+Docker Image	alpine	latest	Direct	MIT	https://gitlab.alpinelinux.org/alpine/aports/-/blob/master/main/alpine-base/APKBUILD	docker-compose.yml	Resource check (setup only)
+Java/Maven	org.apache.iceberg:iceberg-spark-runtime-4.0_2.13	1.10.0	Direct	Apache-2.0	https://github.com/apache/iceberg/blob/main/LICENSE	spark-defaults.conf.template	Iceberg Spark integration (uber-jar)
+Java/Maven	org.apache.iceberg:iceberg-aws-bundle	1.10.0	Direct	Apache-2.0	https://github.com/apache/iceberg/blob/main/LICENSE	spark-defaults.conf.template	Iceberg AWS integrations (uber-jar)
+Java/Maven	software.amazon.awssdk:bundle	2.20.18	Direct	Apache-2.0	https://github.com/aws/aws-sdk-java-v2/blob/master/LICENSE.txt	spark-defaults.conf.template	AWS SDK v2 (uber-jar)
+Java/Maven	software.amazon.awssdk:url-connection-client	2.20.18	Direct	Apache-2.0	https://github.com/aws/aws-sdk-java-v2/blob/master/LICENSE.txt	spark-defaults.conf.template	AWS SDK HTTP client
+Java/Maven	org.apache.hadoop:hadoop-aws	3.4.1	Direct	Apache-2.0	https://github.com/apache/hadoop/blob/trunk/LICENSE.txt	spark-defaults.conf.template	Hadoop S3A filesystem
+Java/Maven	org.apache.iceberg:iceberg-core	1.10.0	Transitive	Apache-2.0	https://github.com/apache/iceberg/blob/main/LICENSE	iceberg-spark-runtime	Core Iceberg library
+Java/Maven	org.apache.iceberg:iceberg-api	1.10.0	Transitive	Apache-2.0	https://github.com/apache/iceberg/blob/main/LICENSE	iceberg-spark-runtime	Iceberg API
+Java/Maven	org.apache.iceberg:iceberg-common	1.10.0	Transitive	Apache-2.0	https://github.com/apache/iceberg/blob/main/LICENSE	iceberg-spark-runtime	Iceberg common utilities
+Java/Maven	org.apache.iceberg:iceberg-data	1.10.0	Transitive	Apache-2.0	https://github.com/apache/iceberg/blob/main/LICENSE	iceberg-spark-runtime	Iceberg data module
+Java/Maven	org.apache.iceberg:iceberg-parquet	1.10.0	Transitive	Apache-2.0	https://github.com/apache/iceberg/blob/main/LICENSE	iceberg-spark-runtime	Parquet file format support
+Java/Maven	org.apache.iceberg:iceberg-orc	1.10.0	Transitive	Apache-2.0	https://github.com/apache/iceberg/blob/main/LICENSE	iceberg-spark-runtime	ORC file format support
+Java/Maven	org.apache.iceberg:iceberg-arrow	1.10.0	Transitive	Apache-2.0	https://github.com/apache/iceberg/blob/main/LICENSE	iceberg-spark-runtime	Arrow integration
+Java/Maven	org.apache.iceberg:iceberg-bundled-guava	1.10.0	Transitive	Apache-2.0	https://github.com/apache/iceberg/blob/main/LICENSE	iceberg-spark-runtime	Shaded Guava
+Java/Maven	org.apache.iceberg:iceberg-aws	1.10.0	Transitive	Apache-2.0	https://github.com/apache/iceberg/blob/main/LICENSE	iceberg-aws-bundle	AWS catalog/file-IO implementations
+Java/Maven	org.apache.parquet:parquet-avro	(Spark-managed)	Transitive	Apache-2.0	https://github.com/apache/parquet-java/blob/master/LICENSE	iceberg-spark-runtime	Parquet Avro support
+Java/Maven	org.apache.avro:avro	(Spark-managed)	Transitive	Apache-2.0	https://github.com/apache/avro/blob/master/LICENSE.txt	iceberg-spark-runtime	Avro serialization
+Java/Maven	com.fasterxml.jackson.core:jackson-databind	(Spark-managed)	Transitive	Apache-2.0	https://github.com/FasterXML/jackson-databind/blob/2.x/LICENSE	iceberg-spark-runtime	JSON processing
+Java/Maven	com.github.ben-manes.caffeine:caffeine	(Spark-managed)	Transitive	Apache-2.0	https://github.com/ben-manes/caffeine/blob/master/LICENSE	iceberg-core	In-memory caching
+Java/Maven	org.apache.spark:spark-core_2.13	4.0.1	Transitive	Apache-2.0	https://github.com/apache/spark/blob/master/LICENSE	pyspark-notebook image	Spark core engine
+Java/Maven	org.apache.spark:spark-sql_2.13	4.0.1	Transitive	Apache-2.0	https://github.com/apache/spark/blob/master/LICENSE	pyspark-notebook image	Spark SQL engine
+Java/Maven	org.apache.spark:spark-catalyst_2.13	4.0.1	Transitive	Apache-2.0	https://github.com/apache/spark/blob/master/LICENSE	pyspark-notebook image	Spark query optimizer
+Java/Maven	org.apache.hadoop:hadoop-common	(Spark-managed)	Transitive	Apache-2.0	https://github.com/apache/hadoop/blob/trunk/LICENSE.txt	pyspark-notebook image	Hadoop core
+Java/Maven	org.apache.hadoop:hadoop-client	(Spark-managed)	Transitive	Apache-2.0	https://github.com/apache/hadoop/blob/trunk/LICENSE.txt	pyspark-notebook image	Hadoop client
+Java/Maven	software.amazon.awssdk:s3	2.20.18	Transitive	Apache-2.0	https://github.com/aws/aws-sdk-java-v2/blob/master/LICENSE.txt	awssdk:bundle	S3 client
+Java/Maven	software.amazon.awssdk:sts	2.20.18	Transitive	Apache-2.0	https://github.com/aws/aws-sdk-java-v2/blob/master/LICENSE.txt	awssdk:bundle	STS client (vended credentials)
+Java/Maven	software.amazon.awssdk:dynamodb	2.20.18	Transitive	Apache-2.0	https://github.com/aws/aws-sdk-java-v2/blob/master/LICENSE.txt	awssdk:bundle	DynamoDB client
+Java/Maven	software.amazon.awssdk:glue	2.20.18	Transitive	Apache-2.0	https://github.com/aws/aws-sdk-java-v2/blob/master/LICENSE.txt	awssdk:bundle	Glue client
+Java/Maven	software.amazon.awssdk:kms	2.20.18	Transitive	Apache-2.0	https://github.com/aws/aws-sdk-java-v2/blob/master/LICENSE.txt	awssdk:bundle	KMS client
+Java/Maven	software.amazon.awssdk:auth	2.20.18	Transitive	Apache-2.0	https://github.com/aws/aws-sdk-java-v2/blob/master/LICENSE.txt	awssdk:bundle	AWS authentication
+Java/Maven	software.amazon.awssdk:regions	2.20.18	Transitive	Apache-2.0	https://github.com/aws/aws-sdk-java-v2/blob/master/LICENSE.txt	awssdk:bundle	AWS regions
+Java/Maven	software.amazon.awssdk:sdk-core	2.20.18	Transitive	Apache-2.0	https://github.com/aws/aws-sdk-java-v2/blob/master/LICENSE.txt	awssdk:bundle	AWS SDK core
+Java/Maven	com.amazonaws:aws-java-sdk-s3	(hadoop-aws managed)	Transitive	Apache-2.0	https://github.com/aws/aws-sdk-java/blob/master/LICENSE.txt	hadoop-aws	AWS SDK v1 S3 (hadoop-aws)
+Python (Runtime)	pyiceberg	latest	Direct	Apache-2.0	https://github.com/apache/iceberg-python/blob/main/LICENSE	docker-compose.yml pip install	Python Iceberg client library
+Python (Runtime)	pyarrow	latest	Direct	Apache-2.0	https://github.com/apache/arrow/blob/main/LICENSE.txt	docker-compose.yml pip install	pyiceberg[pyarrow] extra
+Python (Runtime)	pandas	latest	Direct	BSD-3-Clause	https://github.com/pandas-dev/pandas/blob/main/LICENSE	docker-compose.yml pip install	pyiceberg[pandas] extra
+Python (Runtime)	trino	latest	Direct	Apache-2.0	https://github.com/trinodb/trino-python-client/blob/master/LICENSE	docker-compose.yml pip install	Trino Python DB-API client
+Python (Runtime)	sqlalchemy	latest	Direct	MIT	https://github.com/sqlalchemy/sqlalchemy/blob/main/LICENSE	docker-compose.yml pip install	SQL toolkit / ORM
+Python (Runtime)	matplotlib	latest	Direct	PSF-based (BSD-compatible)	https://github.com/matplotlib/matplotlib/blob/main/LICENSE/LICENSE	docker-compose.yml pip install	Plotting library
+Python (Runtime)	seaborn	latest	Direct	BSD-3-Clause	https://github.com/mwaskom/seaborn/blob/master/LICENSE.md	docker-compose.yml pip install	Statistical visualization
+Python (Runtime)	requests	latest	Direct	Apache-2.0	https://github.com/psf/requests/blob/main/LICENSE	docker-compose.yml pip install	HTTP client
+Python (Runtime)	boto3	latest	Direct	Apache-2.0	https://github.com/boto/boto3/blob/develop/LICENSE	docker-compose.yml pip install	AWS SDK for Python
+Python (Runtime)	pyspark	4.0.1	Direct	Apache-2.0	https://github.com/apache/spark/blob/master/LICENSE	pyspark-notebook image	PySpark (pre-installed in image)
+Python (Runtime)	jupyterlab	(image-managed)	Direct	BSD-3-Clause	https://github.com/jupyterlab/jupyterlab/blob/main/LICENSE	pyspark-notebook image	Jupyter Lab IDE (pre-installed)
+Python (Runtime)	numpy	latest	Transitive	BSD-3-Clause	https://github.com/numpy/numpy/blob/main/LICENSE.txt	pandas, pyarrow, matplotlib	Numerical computing
+Python (Runtime)	botocore	latest	Transitive	Apache-2.0	https://github.com/boto/botocore/blob/develop/LICENSE.txt	boto3	Low-level AWS interface
+Python (Runtime)	s3transfer	latest	Transitive	Apache-2.0	https://github.com/boto/s3transfer/blob/develop/LICENSE.txt	boto3	S3 transfer manager
+Python (Runtime)	jmespath	latest	Transitive	MIT	https://github.com/jmespath/jmespath.py/blob/develop/LICENSE.txt	boto3, botocore	JSON query language
+Python (Runtime)	urllib3	latest	Transitive	MIT	https://github.com/urllib3/urllib3/blob/main/LICENSE.txt	boto3, requests	HTTP library
+Python (Runtime)	certifi	latest	Transitive	MPL-2.0	https://github.com/certifi/python-certifi/blob/master/LICENSE	requests	Mozilla TLS certificate bundle
+Python (Runtime)	charset-normalizer	latest	Transitive	MIT	https://github.com/Ousret/charset_normalizer/blob/master/LICENSE	requests	Character encoding detection
+Python (Runtime)	idna	latest	Transitive	BSD-3-Clause	https://github.com/kjd/idna/blob/master/LICENSE.md	requests	Internationalized domain names
+Python (Runtime)	pydantic	latest	Transitive	MIT	https://github.com/pydantic/pydantic/blob/main/LICENSE	pyiceberg	Data validation
+Python (Runtime)	pydantic-core	latest	Transitive	MIT	https://github.com/pydantic/pydantic-core/blob/main/LICENSE	pydantic	Pydantic core (Rust)
+Python (Runtime)	annotated-types	latest	Transitive	MIT	https://github.com/annotated-types/annotated-types/blob/main/LICENSE	pydantic	Type annotation support
+Python (Runtime)	typing-extensions	latest	Transitive	PSF	https://github.com/python/typing_extensions/blob/main/LICENSE	pydantic, sqlalchemy	Backport typing features
+Python (Runtime)	fsspec	latest	Transitive	BSD-3-Clause	https://github.com/fsspec/filesystem_spec/blob/master/LICENSE	pyiceberg	Filesystem abstraction
+Python (Runtime)	click	latest	Transitive	BSD-3-Clause	https://github.com/pallets/click/blob/main/LICENSE.txt	pyiceberg	CLI framework
+Python (Runtime)	rich	latest	Transitive	MIT	https://github.com/Textualize/rich/blob/master/LICENSE	pyiceberg	Rich text / terminal formatting
+Python (Runtime)	strictyaml	latest	Transitive	MIT	https://github.com/crdoconnor/strictyaml/blob/master/LICENSE.txt	pyiceberg	YAML parsing
+Python (Runtime)	sortedcontainers	latest	Transitive	Apache-2.0	https://github.com/grantjenks/python-sortedcontainers/blob/master/LICENSE	pyiceberg	Sorted collection types
+Python (Runtime)	mmh3	latest	Transitive	MIT	https://github.com/hajimes/mmh3/blob/master/LICENSE	pyiceberg	MurmurHash3 hashing
+Python (Runtime)	pyparsing	latest	Transitive	MIT	https://github.com/pyparsing/pyparsing/blob/master/LICENSE	pyiceberg, matplotlib	Parsing library
+Python (Runtime)	tenacity	latest	Transitive	Apache-2.0	https://github.com/jd/tenacity/blob/main/LICENSE	pyiceberg	Retry logic
+Python (Runtime)	python-dateutil	latest	Transitive	Apache-2.0 / BSD-3-Clause	https://github.com/dateutil/dateutil/blob/master/LICENSE	pandas, trino	Date utilities (dual-licensed)
+Python (Runtime)	pytz	latest	Transitive	MIT	https://github.com/stub42/pytz/blob/master/LICENSE.txt	pandas	Timezone definitions
+Python (Runtime)	tzdata	latest	Transitive	Apache-2.0	https://github.com/python/tzdata/blob/master/LICENSE	pandas	IANA timezone data
+Python (Runtime)	six	latest	Transitive	MIT	https://github.com/benjaminp/six/blob/master/LICENSE	python-dateutil	Python 2/3 compatibility
+Python (Runtime)	pillow	latest	Transitive	HPND (MIT-CMU)	https://github.com/python-pillow/Pillow/blob/main/LICENSE	matplotlib	Image processing
+Python (Runtime)	cycler	latest	Transitive	BSD-3-Clause	https://github.com/matplotlib/cycler/blob/main/LICENSE	matplotlib	Composable style cycles
+Python (Runtime)	fonttools	latest	Transitive	MIT	https://github.com/fonttools/fonttools/blob/main/LICENSE	matplotlib	Font manipulation
+Python (Runtime)	kiwisolver	latest	Transitive	BSD-3-Clause	https://github.com/nucleic/kiwi/blob/main/LICENSE	matplotlib	Constraint solver
+Python (Runtime)	contourpy	latest	Transitive	BSD-3-Clause	https://github.com/contourpy/contourpy/blob/main/LICENSE	matplotlib	Contour plot algorithms
+Python (Runtime)	packaging	latest	Transitive	Apache-2.0 / BSD-2-Clause	https://github.com/pypa/packaging/blob/main/LICENSE.APACHE	matplotlib	Version/specifier handling (dual-licensed)
+Python (Runtime)	py4j	(pyspark-managed)	Transitive	BSD-3-Clause	https://github.com/py4j/py4j/blob/master/LICENSE.txt	pyspark	Java-Python bridge (used by Spark Connect server; notebooks do not use it directly)
+Python (Runtime)	greenlet	latest	Transitive	MIT	https://github.com/python-greenlet/greenlet/blob/master/LICENSE	sqlalchemy	Lightweight coroutines (optional)
+Python (Runtime)	markdown-it-py	latest	Transitive	MIT	https://github.com/executablebooks/markdown-it-py/blob/master/LICENSE	rich	Markdown parsing
+Python (Runtime)	mdurl	latest	Transitive	MIT	https://github.com/executablebooks/mdurl/blob/master/LICENSE	markdown-it-py	URL utilities
+Python (Runtime)	pygments	latest	Transitive	BSD-2-Clause	https://github.com/pygments/pygments/blob/main/LICENSE	rich	Syntax highlighting
+Python (Test)	pytest	>=8.0.0	Direct	MIT	https://github.com/pytest-dev/pytest/blob/main/LICENSE	requirements-test.txt	Test framework
+Python (Test)	pytest-xdist	>=3.5.0	Direct	MIT	https://github.com/pytest-dev/pytest-xdist/blob/master/LICENSE	requirements-test.txt	Parallel test execution
+Python (Test)	nbconvert	>=7.0.0	Direct	BSD-3-Clause	https://github.com/jupyter/nbconvert/blob/main/LICENSE	requirements-test.txt	Notebook conversion/execution
+Python (Test)	nbformat	>=5.9.0	Direct	BSD-3-Clause	https://github.com/jupyter/nbformat/blob/main/LICENSE	requirements-test.txt	Notebook file format
+Python (Test)	jupyter-client	>=8.0.0	Direct	BSD-3-Clause	https://github.com/jupyter/jupyter_client/blob/main/LICENSE	requirements-test.txt	Jupyter kernel client
+Python (Test)	iniconfig	latest	Transitive	MIT	https://github.com/pytest-dev/iniconfig/blob/main/LICENSE	pytest	INI config parsing
+Python (Test)	pluggy	latest	Transitive	MIT	https://github.com/pytest-dev/pluggy/blob/main/LICENSE	pytest	Plugin management
+Python (Test)	exceptiongroup	latest	Transitive	MIT	https://github.com/agronholm/exceptiongroup/blob/main/LICENSE	pytest	Exception groups (Python <3.11)
+Python (Test)	tomli	latest	Transitive	MIT	https://github.com/hukkin/tomli/blob/master/LICENSE	pytest	TOML parsing (Python <3.11)
+Python (Test)	execnet	latest	Transitive	MIT	https://github.com/pytest-dev/execnet/blob/main/LICENSE	pytest-xdist	Distributed execution
+Python (Test)	nbclient	latest	Transitive	BSD-3-Clause	https://github.com/jupyter/nbclient/blob/main/LICENSE	nbconvert	Notebook execution client
+Python (Test)	jinja2	latest	Transitive	BSD-3-Clause	https://github.com/pallets/jinja/blob/main/LICENSE.txt	nbconvert	Template engine
+Python (Test)	markupsafe	latest	Transitive	BSD-3-Clause	https://github.com/pallets/markupsafe/blob/main/LICENSE.txt	jinja2	Safe markup strings
+Python (Test)	mistune	latest	Transitive	BSD-3-Clause	https://github.com/lepture/mistune/blob/master/LICENSE	nbconvert	Markdown parser
+Python (Test)	beautifulsoup4	latest	Transitive	MIT	https://code.launchpad.net/beautifulsoup	nbconvert	HTML parsing
+Python (Test)	soupsieve	latest	Transitive	MIT	https://github.com/facelessuser/soupsieve/blob/main/LICENSE.md	beautifulsoup4	CSS selector engine
+Python (Test)	bleach	latest	Transitive	Apache-2.0	https://github.com/mozilla/bleach/blob/main/LICENSE	nbconvert	HTML sanitization (deprecated)
+Python (Test)	defusedxml	latest	Transitive	PSF	https://github.com/tiran/defusedxml/blob/main/LICENSE	nbconvert	Safe XML parsing
+Python (Test)	pandocfilters	latest	Transitive	BSD-3-Clause	https://github.com/jgm/pandocfilters/blob/master/LICENSE	nbconvert	Pandoc AST filters
+Python (Test)	tinycss2	latest	Transitive	BSD-3-Clause	https://github.com/Kozea/tinycss2/blob/main/LICENSE	nbconvert	CSS parsing
+Python (Test)	webencodings	latest	Transitive	BSD-3-Clause	https://github.com/gsnedders/python-webencodings/blob/master/LICENSE	tinycss2, bleach	Character encoding
+Python (Test)	traitlets	latest	Transitive	BSD-3-Clause	https://github.com/ipython/traitlets/blob/main/LICENSE	nbformat, nbconvert, jupyter-client	Config/trait system
+Python (Test)	jupyter-core	latest	Transitive	BSD-3-Clause	https://github.com/jupyter/jupyter_core/blob/main/LICENSE	nbformat, jupyter-client	Jupyter core utilities
+Python (Test)	platformdirs	latest	Transitive	MIT	https://github.com/tox-dev/platformdirs/blob/main/LICENSE	jupyter-core	Platform directory paths
+Python (Test)	jsonschema	latest	Transitive	MIT	https://github.com/python-jsonschema/jsonschema/blob/main/COPYING	nbformat	JSON Schema validation
+Python (Test)	jsonschema-specifications	latest	Transitive	MIT	https://github.com/python-jsonschema/jsonschema-specifications/blob/main/COPYING	jsonschema	JSON Schema specs
+Python (Test)	referencing	latest	Transitive	MIT	https://github.com/python-jsonschema/referencing/blob/main/COPYING	jsonschema	JSON reference handling
+Python (Test)	rpds-py	latest	Transitive	MIT	https://github.com/crate-py/rpds/blob/main/LICENSE	jsonschema, referencing	Rust persistent data structures
+Python (Test)	attrs	latest	Transitive	MIT	https://github.com/python-attrs/attrs/blob/main/LICENSE	jsonschema	Class decorator utilities
+Python (Test)	fastjsonschema	latest	Transitive	BSD-3-Clause	https://github.com/horejsek/python-fastjsonschema/blob/master/LICENSE	nbformat	Fast JSON Schema validation
+Python (Test)	pyzmq	latest	Transitive	BSD-3-Clause / LGPL-3.0	https://github.com/zeromq/pyzmq/blob/main/LICENSE.BSD	jupyter-client	ZeroMQ Python bindings (dual-licensed)
+Python (Test)	tornado	latest	Transitive	Apache-2.0	https://github.com/tornadoweb/tornado/blob/master/LICENSE	jupyter-client	Async networking
+Pre-commit	nbstripout	0.7.1	Direct	MIT	https://github.com/kynan/nbstripout/blob/master/LICENSE.txt	.pre-commit-config.yaml	Strip notebook outputs
+GitHub Actions	actions/checkout	v4	Direct	MIT	https://github.com/actions/checkout/blob/main/LICENSE	.github/workflows	Repository checkout
+GitHub Actions	actions/setup-python	v5	Direct	MIT	https://github.com/actions/setup-python/blob/main/LICENSE	.github/workflows	Python setup
+GitHub Actions	actions/upload-artifact	v4	Direct	MIT	https://github.com/actions/upload-artifact/blob/main/LICENSE	.github/workflows	Artifact upload
+Dataset	NYC Yellow Taxi Trip Records (TLC)	2023 (Jun–Nov)	Direct	NYC Open Data Terms of Use (no restrictions)	https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page	notebooks (all exercises + videos)	Published by NYC Taxi & Limousine Commission via NYC Open Data. Downloaded from https://d37ci6vzurychx.cloudfront.net/trip-data/. NYC Open Data FAQ states "There are no restrictions on the use of Open Data." Subject to NYC.gov Terms of Use (http://www1.nyc.gov/home/terms-of-use.page). Data provided as-is with no warranty of accuracy. Not created by TLC; sourced from Technology Service Providers (TSPs).

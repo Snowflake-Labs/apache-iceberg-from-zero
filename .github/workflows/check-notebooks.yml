@@ -1,0 +1,56 @@
+name: Check Notebooks Stripped
+
+on:
+  pull_request:
+    paths:
+      - '**.ipynb'
+  push:
+    branches:
+      - main
+    paths:
+      - '**.ipynb'
+      - '.github/workflows/check-notebooks.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: check-notebooks-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check-notebooks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install nbstripout
+        run: pip install nbstripout
+
+      - name: Check notebooks are stripped
+        run: |
+          failed=0
+          while IFS= read -r -d '' notebook; do
+            echo "Checking $notebook..."
+            if ! nbstripout --verify "$notebook"; then
+              echo "❌ $notebook has unstripped output"
+              failed=1
+            else
+              echo "✅ $notebook is clean"
+            fi
+          done < <(find . -name '*.ipynb' -not -path './.git/*' -not -path './node_modules/*' -print0)
+
+          if [ $failed -eq 1 ]; then
+            echo ""
+            echo "================================================"
+            echo "Some notebooks have output that should be stripped."
+            echo "Run: nbstripout <notebook-file>"
+            echo "================================================"
+            exit 1
+          fi
+
+          echo "All notebooks are properly stripped! ✅"

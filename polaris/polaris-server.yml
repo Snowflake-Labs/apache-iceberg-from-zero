@@ -1,0 +1,38 @@
+# Polaris Server Configuration
+server:
+  applicationConnectors:
+    - type: http
+      port: 8181
+  adminConnectors:
+    - type: http
+      port: 8182
+
+# Default Realm Configuration
+defaultRealms:
+  - default
+
+# Feature Configuration
+featureConfiguration:
+  ENFORCE_PRINCIPAL_CREDENTIAL_ROTATION_REQUIRED_CHECKING: false
+
+# Storage Configuration  
+storageConfig:
+  type: s3
+  baseLocation: s3://warehouse/
+  allowedLocations:
+    - s3://warehouse/*
+  s3:
+    endpoint: http://minio:9000
+    accessKeyId: admin
+    secretAccessKey: password
+    region: us-east-1
+    pathStyleAccess: true
+
+# Metadata Store Configuration
+metaStoreManager:
+  type: in-memory
+
+# OAuth Configuration
+oauth2:
+  type: default
+

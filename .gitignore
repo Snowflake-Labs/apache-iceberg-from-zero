@@ -1,0 +1,36 @@
+# Data directories
+data/
+
+# Logs
+*.log
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Test artifacts
+*_executed.ipynb
+.pytest_cache/
+test_report.html
+htmlcov/
+.coverage
+
+# IDE / editor
+.idea/
+.cursor/
+.vscode/
+
+# Review artifacts
+reviews/
+test-summary.md
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Init script output (can be regenerated)
+# Note: .env file is intentionally NOT ignored so it's committed with default versions
+

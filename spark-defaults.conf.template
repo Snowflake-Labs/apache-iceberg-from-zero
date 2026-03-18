@@ -1,0 +1,36 @@
+# Iceberg Spark Dependencies
+spark.jars.packages=org.apache.iceberg:iceberg-spark-runtime-${ICEBERG_SPARK_RUNTIME_VERSION}_${SCALA_VERSION}:${ICEBERG_VERSION},org.apache.iceberg:iceberg-aws-bundle:${ICEBERG_VERSION},software.amazon.awssdk:bundle:${AWS_SDK_VERSION},software.amazon.awssdk:url-connection-client:${AWS_SDK_VERSION},org.apache.hadoop:hadoop-aws:3.4.1
+
+# Iceberg Spark SQL/Catalyst Extensions
+spark.sql.extensions=org.apache.iceberg.spark.extensions.IcebergSparkSessionExtensions
+
+# Spark Connect Server Memory Configuration
+spark.driver.memory=4g
+spark.driver.maxResultSize=2g
+
+# Catalog configuration for Polaris with OAuth2
+spark.sql.catalog.polaris=org.apache.iceberg.spark.SparkCatalog
+spark.sql.catalog.polaris.type=rest
+spark.sql.catalog.polaris.uri=http://polaris:8181/api/catalog
+spark.sql.catalog.polaris.warehouse=quickstart_catalog
+spark.sql.catalog.polaris.credential=${POLARIS_CLIENT_ID}:${POLARIS_CLIENT_SECRET}
+spark.sql.catalog.polaris.scope=PRINCIPAL_ROLE:ALL
+spark.sql.catalog.polaris.oauth2-server-uri=http://polaris:8181/api/catalog/v1/oauth/tokens
+spark.sql.catalog.polaris.header.X-Iceberg-Access-Delegation=vended-credentials
+spark.sql.catalog.polaris.io-impl=org.apache.iceberg.aws.s3.S3FileIO
+spark.sql.defaultCatalog=polaris
+
+# Storage Component Configuration for MinIO (using S3FileIO)
+spark.sql.catalog.polaris.s3.endpoint=http://minio:9000
+spark.sql.catalog.polaris.s3.access-key-id=admin
+spark.sql.catalog.polaris.s3.secret-access-key=password
+spark.sql.catalog.polaris.s3.path-style-access=true
+
+# Fallback Hadoop S3A configuration for non-Iceberg operations
+spark.hadoop.fs.s3.impl=org.apache.hadoop.fs.s3a.S3AFileSystem
+spark.hadoop.fs.s3a.impl=org.apache.hadoop.fs.s3a.S3AFileSystem
+spark.hadoop.fs.s3a.endpoint=http://minio:9000
+spark.hadoop.fs.s3a.access.key=admin
+spark.hadoop.fs.s3a.secret.key=password
+spark.hadoop.fs.s3a.path.style.access=true
+spark.hadoop.fs.s3a.connection.ssl.enabled=false
