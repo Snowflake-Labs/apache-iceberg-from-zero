@@ -37,7 +37,7 @@ Current pinned versions:
 To update versions, simply edit the `.env` file and rebuild:
 
 ```bash
-docker-compose up -d --build
+docker compose up -d --build
 ```
 
 ## Prerequisites
@@ -50,12 +50,12 @@ docker-compose up -d --build
 
 1. **Start all services**:
    ```bash
-   docker-compose up -d
+   docker compose up -d
    ```
 
 2. **Wait for services to be ready** (approximately 1-2 minutes):
    ```bash
-   docker-compose logs -f
+   docker compose logs -f
    ```
    Press `Ctrl+C` to stop following logs once services are running.
 
@@ -186,33 +186,33 @@ This ensures that your data persists even when containers are stopped.
 
 **Start all services**:
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 **Stop all services**:
 ```bash
-docker-compose down
+docker compose down
 ```
 
 **View logs**:
 ```bash
 # All services
-docker-compose logs -f
+docker compose logs -f
 
 # Specific service
-docker-compose logs -f jupyter
-docker-compose logs -f trino
-docker-compose logs -f polaris
+docker compose logs -f jupyter
+docker compose logs -f trino
+docker compose logs -f polaris
 ```
 
 **Restart a service**:
 ```bash
-docker-compose restart jupyter
+docker compose restart jupyter
 ```
 
 **Rebuild and restart (after config changes)**:
 ```bash
-docker-compose up -d --build
+docker compose up -d --build
 ```
 
 ## Troubleshooting
@@ -233,10 +233,10 @@ lsof -i :8181  # Polaris
 
 ```bash
 # Check if containers are running
-docker-compose ps
+docker compose ps
 
 # Check specific service logs
-docker-compose logs jupyter
+docker compose logs jupyter
 ```
 
 ### Connection refused errors
@@ -260,9 +260,9 @@ chmod -R 755 data/
 
 To start fresh:
 ```bash
-docker-compose down -v
+docker compose down -v
 rm -rf data/*
-docker-compose up -d --build
+docker compose up -d --build
 ```
 
 ## Architecture
@@ -327,9 +327,9 @@ pytest test_notebooks.py -v
 
 If you encounter issues:
 1. Check the troubleshooting section above
-2. Review service logs: `docker-compose logs [service-name]`
+2. Review service logs: `docker compose logs [service-name]`
 3. Ensure your Docker has sufficient resources allocated
-4. Try rebuilding: `docker-compose up -d --build`
+4. Try rebuilding: `docker compose up -d --build`
 
 ## License
 
