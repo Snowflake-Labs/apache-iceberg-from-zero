@@ -533,7 +533,7 @@ def notebook_tester():
     
     # Check if container is running
     if not tester.is_container_running():
-        pytest.exit("Jupyter container is not running. Please start it with: docker-compose up -d")
+        pytest.exit("Jupyter container is not running. Please start it with: docker compose up -d")
     
     return tester
 
@@ -613,7 +613,7 @@ def main():
     # Check container
     if not tester.is_container_running():
         print("ERROR: Jupyter container is not running.")
-        print("Please start it with: docker-compose up -d")
+        print("Please start it with: docker compose up -d")
         sys.exit(1)
     
     print("="*80)
