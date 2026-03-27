@@ -81,7 +81,7 @@ while IFS='=' read -r key value; do
     export "$key"="$value"
 done < "$ENV_FILE"
 
-for var in ICEBERG_VERSION ICEBERG_SPARK_RUNTIME_VERSION SCALA_VERSION AWS_SDK_VERSION; do
+for var in ICEBERG_VERSION ICEBERG_SPARK_RUNTIME_VERSION SCALA_VERSION; do
     if [ -z "${!var:-}" ]; then
         echo "ERROR: Required variable $var not set in .env"
         exit 1
@@ -92,18 +92,21 @@ echo "=== Dependency versions ==="
 echo "  ICEBERG_VERSION:                ${ICEBERG_VERSION}"
 echo "  ICEBERG_SPARK_RUNTIME_VERSION:  ${ICEBERG_SPARK_RUNTIME_VERSION}"
 echo "  SCALA_VERSION:                  ${SCALA_VERSION}"
-echo "  AWS_SDK_VERSION:                ${AWS_SDK_VERSION}"
 echo "  HADOOP_AWS_VERSION:             ${HADOOP_AWS_VERSION}"
 echo "  AWS_SDK_V1_VERSION:             ${AWS_SDK_V1_VERSION}"
 echo ""
 
 # Build the list of (group, artifact, version) tuples.
 # group uses '.' separators; we convert to '/' for the Maven URL path.
+#
+# NOTE: Do NOT add software.amazon.awssdk:bundle or url-connection-client here.
+# The iceberg-aws-bundle is a shadow JAR that embeds the correct AWS SDK v2
+# version without class relocation. Adding a standalone SDK v2 JAR causes
+# classpath conflicts (older SDK classes get loaded first, missing methods
+# that iceberg-aws-bundle expects).
 JARS=(
     "org.apache.iceberg  iceberg-spark-runtime-${ICEBERG_SPARK_RUNTIME_VERSION}_${SCALA_VERSION}  ${ICEBERG_VERSION}"
     "org.apache.iceberg  iceberg-aws-bundle  ${ICEBERG_VERSION}"
-    "software.amazon.awssdk  bundle  ${AWS_SDK_VERSION}"
-    "software.amazon.awssdk  url-connection-client  ${AWS_SDK_VERSION}"
     "org.apache.hadoop  hadoop-aws  ${HADOOP_AWS_VERSION}"
     "com.amazonaws  aws-java-sdk-bundle  ${AWS_SDK_V1_VERSION}"
 )

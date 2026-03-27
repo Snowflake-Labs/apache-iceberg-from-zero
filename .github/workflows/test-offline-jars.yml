@@ -80,8 +80,8 @@ jobs:
         ls -lh jars/*.jar
         jar_count=$(ls jars/*.jar | wc -l)
         echo "JAR count: ${jar_count}"
-        if [ "$jar_count" -lt 5 ]; then
-          echo "FAIL: Expected at least 5 JARs, found ${jar_count}"
+        if [ "$jar_count" -lt 4 ]; then
+          echo "FAIL: Expected at least 4 JARs, found ${jar_count}"
           exit 1
         fi
 
