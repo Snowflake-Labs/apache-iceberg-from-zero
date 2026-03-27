@@ -249,6 +249,26 @@ docker compose logs jupyter
 
 If you see this error when initializing a Spark Session in a notebook, the Spark Connect server may have failed to start. Check the Docker container logs (`docker logs jupyter-spark`) for details. Common causes include insufficient Docker RAM or port conflicts. You can also try restarting the container (`docker compose restart jupyter`).
 
+### SSL / Corporate Proxy Errors Downloading JARs
+
+If you are on a corporate network with a proxy or firewall that intercepts HTTPS traffic, Spark may fail to download its dependency JARs at startup. You will typically see SSL certificate errors in `docker logs jupyter-spark`.
+
+**Fix:** Pre-download the JARs on your host machine using the provided script:
+
+```bash
+./manual-download-dependencies.sh --insecure
+```
+
+The `--insecure` flag tells `curl` to skip SSL certificate verification. The JARs are saved to the `./jars/` directory and automatically mounted into the container on the next startup. Spark will use these local JARs instead of downloading from Maven Central.
+
+After downloading, restart the services:
+```bash
+docker compose down
+docker compose up -d
+```
+
+You should see `Using pre-downloaded JARs from /opt/spark-jars` in the Jupyter container logs.
+
 ### Permission errors
 
 If you encounter permission errors with data directories:

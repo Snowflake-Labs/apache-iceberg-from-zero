@@ -16,6 +16,9 @@
 # Data directories
 data/
 
+# Pre-downloaded dependency JARs (created by manual-download-dependencies.sh)
+jars/
+
 # Logs
 *.log
 

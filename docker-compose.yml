@@ -159,6 +159,7 @@ services:
       - ./data/jupyter:/data/jupyter
       - ./spark-defaults.conf.template:/tmp/spark-defaults.conf.template:ro
       - ./generate-spark-config.py:/tmp/generate-spark-config.py:ro
+      - ./jars:/opt/spark-jars:ro
     command:
       - bash
       - -c

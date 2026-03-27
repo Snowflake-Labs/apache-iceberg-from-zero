@@ -55,6 +55,36 @@ python test_notebooks.py
 - ✅ SELECT queries return data rows (not empty)
 - ✅ No Python exceptions or broken cells
 
+## Testing Offline JAR Mode
+
+The offline JAR mode allows Spark to use pre-downloaded JARs instead of fetching them from Maven Central at runtime. This is tested by a dedicated CI workflow (`.github/workflows/test-offline-jars.yml`) and can also be run locally.
+
+### Running Locally
+
+```bash
+# 1. Download JARs (use --insecure if behind a corporate proxy)
+./manual-download-dependencies.sh
+
+# 2. Start services (JARs are auto-mounted from ./jars/)
+docker compose up -d
+
+# 3. Verify the config uses local JARs
+docker exec jupyter-spark grep "^spark.jars=" /home/jovyan/.sparkconf/spark-defaults.conf
+
+# 4. Run a notebook test to confirm everything works
+pytest test_notebooks.py -v -k "test_01_setup or E1_2_DataModeling" --tb=short
+
+# 5. Clean up
+docker compose down -v
+rm -rf jars/
+```
+
+### What the CI Workflow Checks
+
+1. `manual-download-dependencies.sh` downloads all expected JARs
+2. The generated `spark-defaults.conf` uses `spark.jars=` (local paths) instead of `spark.jars.packages=`
+3. A notebook runs successfully with Spark loading from local JARs
+
 ## Requirements
 
 - Docker running with `jupyter-spark` container
