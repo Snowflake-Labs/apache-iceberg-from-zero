@@ -153,9 +153,11 @@ jobs:
     if: always()
     runs-on: ubuntu-latest
     steps:
-      - run: |
-          if [[ "${{ needs.test-offline-jars.result }}" == "failure" || "${{ needs.test-offline-jars.result }}" == "cancelled" ]]; then
+      - env:
+          RESULT: ${{ needs.test-offline-jars.result }}
+        run: |
+          if [[ "$RESULT" == "failure" || "$RESULT" == "cancelled" ]]; then
             echo "Offline JARs test failed or was cancelled"
             exit 1
           fi
-          echo "Gate passed (test result: ${{ needs.test-offline-jars.result }})"
+          echo "Gate passed (test result: $RESULT)"
