@@ -37,6 +37,11 @@ CURL_OPTS=("-fSL" "--retry" "3" "--retry-delay" "2")
 AWS_SDK_V1_VERSION="1.12.367"
 # hadoop-aws version (keep in sync with spark-defaults.conf.template)
 HADOOP_AWS_VERSION="3.4.1"
+# AWS SDK v2 version — must match what iceberg-aws-bundle was compiled against
+# (see Iceberg's gradle/libs.versions.toml, key "awssdk-bom").
+# Do NOT use the AWS_SDK_VERSION from .env here; that value may be older and
+# causes NoSuchMethodError when iceberg-aws-bundle classes are on the same classpath.
+AWS_SDK_V2_VERSION="2.33.0"
 
 usage() {
     echo "Usage: $0 [--insecure]"
@@ -94,19 +99,21 @@ echo "  ICEBERG_SPARK_RUNTIME_VERSION:  ${ICEBERG_SPARK_RUNTIME_VERSION}"
 echo "  SCALA_VERSION:                  ${SCALA_VERSION}"
 echo "  HADOOP_AWS_VERSION:             ${HADOOP_AWS_VERSION}"
 echo "  AWS_SDK_V1_VERSION:             ${AWS_SDK_V1_VERSION}"
+echo "  AWS_SDK_V2_VERSION:             ${AWS_SDK_V2_VERSION}"
 echo ""
 
 # Build the list of (group, artifact, version) tuples.
 # group uses '.' separators; we convert to '/' for the Maven URL path.
 #
-# NOTE: Do NOT add software.amazon.awssdk:bundle or url-connection-client here.
-# The iceberg-aws-bundle is a shadow JAR that embeds the correct AWS SDK v2
-# version without class relocation. Adding a standalone SDK v2 JAR causes
-# classpath conflicts (older SDK classes get loaded first, missing methods
-# that iceberg-aws-bundle expects).
+# The AWS SDK v2 version MUST match what iceberg-aws-bundle was compiled against.
+# The iceberg-aws-bundle is a shadow JAR that embeds AWS SDK v2 classes without
+# package relocation. If a standalone SDK v2 JAR at an older version is loaded
+# first on the classpath, methods that iceberg-aws-bundle expects will be missing.
 JARS=(
     "org.apache.iceberg  iceberg-spark-runtime-${ICEBERG_SPARK_RUNTIME_VERSION}_${SCALA_VERSION}  ${ICEBERG_VERSION}"
     "org.apache.iceberg  iceberg-aws-bundle  ${ICEBERG_VERSION}"
+    "software.amazon.awssdk  bundle  ${AWS_SDK_V2_VERSION}"
+    "software.amazon.awssdk  url-connection-client  ${AWS_SDK_V2_VERSION}"
     "org.apache.hadoop  hadoop-aws  ${HADOOP_AWS_VERSION}"
     "com.amazonaws  aws-java-sdk-bundle  ${AWS_SDK_V1_VERSION}"
 )
