@@ -36,28 +36,28 @@ services:
     networks:
       - iceberg-net
 
-  # MinIO - S3-compatible object storage
-  minio:
-    image: quay.io/minio/minio:latest
-    container_name: minio
+  # RustFS - S3-compatible object storage
+  rustfs:
+    image: rustfs/rustfs:latest
+    container_name: rustfs
     ports:
       - "9000:9000"
-      - "9001:9001"
     environment:
-      MINIO_ROOT_USER: admin
-      MINIO_ROOT_PASSWORD: password
-    command: server /data --console-address ":9001"
+      RUSTFS_ACCESS_KEY_ID: admin
+      RUSTFS_SECRET_ACCESS_KEY: password
+    command: server --address 0.0.0.0:9000 --access-key admin --secret-key password /data
     volumes:
-      - ./data/minio:/data
+      - ./data/rustfs:/data
     depends_on:
       check-resources:
         condition: service_completed_successfully
     networks:
       - iceberg-net
     healthcheck:
-      test: ["CMD", "curl", "http://127.0.0.1:9000/minio/health/live"]
-      interval: 1s
+      test: ["CMD", "curl", "http://127.0.0.1:9000/health"]
+      interval: 10s
       timeout: 10s
+      retries: 5
 
   # Polaris Iceberg REST Catalog (following official Apache guide)
   polaris:
@@ -79,7 +79,7 @@ services:
     volumes:
       - ./data/polaris:/var/polaris
     depends_on:
-      minio:
+      rustfs:
         condition: service_healthy
     networks:
       - iceberg-net
@@ -90,24 +90,8 @@ services:
       retries: 10
       start_period: 10s
 
-  # Setup MinIO bucket
-  setup_bucket:
-    image: quay.io/minio/mc:latest
-    container_name: setup-minio
-    depends_on:
-      minio:
-        condition: service_healthy
-    entrypoint: "/bin/sh"
-    command:
-      - "-c"
-      - >-
-        echo Creating MinIO bucket...;
-        mc alias set pol http://minio:9000 admin password;
-        mc mb pol/warehouse || true;
-        mc ls pol;
-        echo Bucket setup complete.
-    networks:
-      - iceberg-net
+  # Setup MinIO bucket (manual step - see README)
+  # Bucket will be created manually after MinIO starts
 
   # Setup Polaris catalog
   polaris-setup:

@@ -35,8 +35,8 @@ spark.sql.catalog.polaris.header.X-Iceberg-Access-Delegation=vended-credentials
 spark.sql.catalog.polaris.io-impl=org.apache.iceberg.aws.s3.S3FileIO
 spark.sql.defaultCatalog=polaris
 
-# Storage Component Configuration for MinIO (using S3FileIO)
-spark.sql.catalog.polaris.s3.endpoint=http://minio:9000
+# Storage Component Configuration for RustFS (using S3FileIO)
+spark.sql.catalog.polaris.s3.endpoint=http://rustfs:9000
 spark.sql.catalog.polaris.s3.access-key-id=admin
 spark.sql.catalog.polaris.s3.secret-access-key=password
 spark.sql.catalog.polaris.s3.path-style-access=true
@@ -44,7 +44,7 @@ spark.sql.catalog.polaris.s3.path-style-access=true
 # Fallback Hadoop S3A configuration for non-Iceberg operations
 spark.hadoop.fs.s3.impl=org.apache.hadoop.fs.s3a.S3AFileSystem
 spark.hadoop.fs.s3a.impl=org.apache.hadoop.fs.s3a.S3AFileSystem
-spark.hadoop.fs.s3a.endpoint=http://minio:9000
+spark.hadoop.fs.s3a.endpoint=http://rustfs:9000
 spark.hadoop.fs.s3a.access.key=admin
 spark.hadoop.fs.s3a.secret.key=password
 spark.hadoop.fs.s3a.path.style.access=true

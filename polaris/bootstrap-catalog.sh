@@ -40,7 +40,7 @@ echo "✅ Got token"
 echo ""
 echo "📚 Creating Polaris catalog..."
 
-STORAGE_CONFIG='{"storageType":"S3","endpoint":"http://minio:9000","pathStyleAccess":true,"allowedLocations":["s3://warehouse"]}'
+STORAGE_CONFIG='{"storageType":"S3","endpoint":"http://rustfs:9000","pathStyleAccess":true,"allowedLocations":["s3://warehouse"]}'
 STORAGE_LOCATION='s3://warehouse'
 
 PAYLOAD='{
@@ -78,13 +78,13 @@ echo "=========================================="
 echo ""
 echo "Configuration:"
 echo "  - Catalog: quickstart_catalog"
-echo "  - Storage: MinIO S3 (INTERNAL endpoint)"
-echo "  - Endpoint: http://minio:9000 (Docker network)"
+echo "  - Storage: RustFS S3 (INTERNAL endpoint)"
+echo "  - Endpoint: http://rustfs:9000 (Docker network)"
 echo ""
 echo "Credentials:"
 echo "  Client ID: root"
 echo "  Client Secret: s3cr3t"
 echo ""
-echo "MinIO Console: http://localhost:9001"
+echo "RustFS: http://localhost:9000"
 echo "  Username: admin"
 echo "  Password: password"
